@@ -5,8 +5,10 @@ class Client:
     def __init__(self, conn, address, host, port, clients):
         self.__conn = conn
         self.__address = address
-        self.__nom = ""        
+        self.__nom = ""
+        self.__salon = []
 
+        clients.append(self)
         threading.Thread(target=handler, args=(self, host, port, clients)).start()
 
     @property
@@ -14,11 +16,19 @@ class Client:
         return self.__conn
     
     @property
-    def nom(self) -> bool:
+    def addr(self) -> str:
+        return self.__address
+    
+    @property
+    def conn(self) -> list:
+        return self.__salon
+    
+    @property
+    def nom(self) -> str:
         return self.__nom
     @nom.setter
-    def etat(self, etat:bool):
-        self.__etat = etat
+    def nom(self, nom:str):
+        self.__nom = nom
 
     @property
     def etat(self) -> bool:
@@ -27,3 +37,15 @@ class Client:
     def etat(self, etat:bool):
         self.__etat = etat
 
+    @property
+    def salon(self) -> list:
+        return self.__salon
+    @etat.setter
+    def salon(self, salon:list):
+        if isinstance(salon, list):
+            self.__salon = salon
+        if isinstance(salon, str):
+            self.__salon.append(salon)
+
+    def envoyer(self, data:str):
+        self.__conn.send(data)

@@ -1,27 +1,3 @@
-"""
-Ce module est le point d'entrée pour l'application serveur.
-
-Il analyse les arguments de la ligne de commande pour l'hôte et le port, les valide, puis démarre le serveur.
-
-Fonctions
----------
-server(host: str, port: int) -> None
-    Démarre le serveur avec l'hôte et le port donnés.
-
-Lève
-------
-ValueError
-    Si le port n'est pas un entier entre 0 et 65535, ou si les arguments de la ligne de commande ne sont pas fournis.
-getopt.GetoptError
-    Si les arguments de la ligne de commande ne sont pas dans le bon format.
-
-Exemples
---------
-Pour démarrer le serveur avec l'hôte 127.0.0.1 et le port 5000, exécutez la commande suivante :
-
-    python main.py -a 127.0.0.1 -p 5000
-"""
-
 from backend.server.server import server
 from backend.database import connexion_mysql
 import sys, getopt

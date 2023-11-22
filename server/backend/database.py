@@ -10,3 +10,4 @@ def connexion_mysql():
     except pymysql.err.OperationalError:
         connection = None
         cursor = None
+        

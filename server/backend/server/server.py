@@ -1,4 +1,4 @@
-import threading, re, time, sys
+import time, sys
 from socket import socket as sock
 from classes import Client
 
