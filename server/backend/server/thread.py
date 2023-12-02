@@ -12,7 +12,7 @@ def handler(client:Client, clients:list) -> None:
             ## Si le message est une demande d'inscription
             if message['type'] == 'inscription':
                 user = message['user']
-                mdp = message['hash_mdp'].encode('utf-8')
+                mdp = message['mdp'].encode('utf-8')
                 demande = message['demande']
 
                 ## Hash le mot de passe
@@ -47,12 +47,17 @@ def handler(client:Client, clients:list) -> None:
             ## Si le message est une demande de connexion
             if message['type'] == 'connexion':
                 user = message['user']
-                mdp = message['hash_mdp'].encode('utf-8')
+                mdp = message['mdp'].encode('utf-8')
+
+                ## Hash le mot de passe
+                salt = bcrypt.gensalt()
+                mdp = bcrypt.hashpw(mdp, salt)
 
                 database.cursor.execute("SELECT * FROM utilisateurs WHERE nom = %s)", (user))
                 
                 ## Si le nom existe
                 if database.cursor.rowcount > 0:
+                    ## Check le mot de passe
                     database.cursor.execute("SELECT mdp FROM utilisateurs WHERE nom = %s", (user))
                     hash_mdp = database.cursor.fetchone()
                     if not bcrypt.checkpw(mdp, hash_mdp):
@@ -60,6 +65,7 @@ def handler(client:Client, clients:list) -> None:
                                             'status': 'ko',
                                             'raison': 'incorrect_password'})
                         client.envoyer(response.encode())
+                    
                     else:
                         client.nom = user
 
@@ -111,10 +117,28 @@ def handler(client:Client, clients:list) -> None:
 
             ## Si le message est un message de salon
             elif message['type'] == 'text':
-                if client.etat() != "valid":
-                    response = json.dumps({'type': 'not_valid_sender', 
-                                        'status': user.etat()})
-                    client.envoyer(response.encode())
+                
+                ## Si l'état de l'utilisateur est "kick"
+                if client.etat == "kick":
+                    database.cursor.execute("SELECT timeout FROM utilisateurs WHERE nom = %s", (user))
+                    timeout = database.cursor.fetchone()
+
+                    database.cursor.execute("SELECT raison FROM utilisateurs WHERE nom = %s", (user))
+                    raison = database.cursor.fetchone()
+
+                    response = json.dumps({'type': 'connexion',
+                                        'status': 'kick',
+                                        'timeout': timeout,
+                                        'raison': raison})
+                
+                ## Si l'état de l'utilisateur est "ban"
+                elif client.etat == "ban":
+                    database.cursor.execute("SELECT raison FROM utilisateurs WHERE nom = %s", (user))
+                    raison = database.cursor.fetchone()
+
+                    response = json.dumps({'type': 'connexion',
+                                        'status': 'ban',
+                                        'raison': raison})
 
                 else:
                     salon = message['salon']
