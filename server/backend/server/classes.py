@@ -6,7 +6,7 @@ class Client:
         self.__conn = conn
         self.__address = address
         self.__nom = ""
-        self.__etat = 
+        self.__etat = ""
         self.__salon = []
 
         clients.append(self)
@@ -48,5 +48,10 @@ class Client:
         if isinstance(salon, str):
             self.__salon.append(salon)
 
+
+    def receive(self) -> str:
+        return self.__conn.recv(1024).decode()
+
     def envoyer(self, data:str):
         self.__conn.send(data)
+
