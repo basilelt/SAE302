@@ -1,4 +1,4 @@
-import time, sys
+import time, sys, re
 from socket import socket as sock
 from classes import Client
 
@@ -19,6 +19,17 @@ def server(host:str, port:int) -> None:
             conn, address = socket.accept()
             client = Client(conn, address, host, port, clients)
             clients.append(client)
+
+            cmd = input("")
+
+            pattern = '^/stop'
+
+            if re.match(pattern, cmd):
+                flag = True
+                flag2 = True
+                for client in clients:
+                    client.close
+                    clients.remove(client)
             
     except(socket.gaierror):
         print("Erreur lors de la résolution de l'hôte")
