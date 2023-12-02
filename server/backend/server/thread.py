@@ -23,7 +23,7 @@ def handler(client:Client, clients:list) -> None:
                 
                 ## Si le nom n'est pas déjà utilisé
                 if database.cursor.rowcount == 0:
-                    client.nom = user
+                    client.nom(user)
 
                     creation = datetime.datetime.now()
                     database.cursor.execute("INSERT INTO utilisateurs (nom, mdp, demande, date_creation) VALUES (%s, %s, %s, %s)", 
@@ -67,7 +67,7 @@ def handler(client:Client, clients:list) -> None:
                         client.envoyer(response.encode())
                     
                     else:
-                        client.nom = user
+                        client.nom(user)
 
                         ## Récupère l'état de l'utilisateur
                         database.cursor.execute("SELECT etat FROM utilisateurs WHERE nom = %s", (user))
@@ -115,15 +115,53 @@ def handler(client:Client, clients:list) -> None:
                 
                 database.connection.close()
 
+            elif message['type'] == 'deconnexion':
+
+            elif message['type'] == 'demande_salon':
+                salon = message['salon']
+
+                database.cursor.execute("SELECT * FROM salons WHERE nom = %s", (salon))
+                
+                ## Si le salon existe
+                if database.cursor.rowcount > 0:
+                    database.cursor.execute("SELECT * FROM salons, utilisateurs WHERE utilisateurs.nom = %s AND salons.nom = %s", (client.nom, salon))
+                    
+                    ## Si l'utilisateur n'est pas déjà dans le salon
+                    if database.cursor.rowcount == 0:
+                        database.cursor.execute("INSERT INTO salons (nom) VALUES (%s)", (salon))
+                        database.connection.commit()
+
+                        client.salon(salon)
+                        response = json.dumps({'type': 'demande_salon',
+                                            'status': 'ok'})
+                        client.envoyer(response.encode())
+                    
+                    ## Si l'utilisateur est déjà dans le salon
+                    else:
+                        response = json.dumps({'type': 'demande_salon',
+                                            'status': 'ko',
+                                            'raison': 'already_in_salon'})
+                        client.envoyer(response.encode())
+                
+                ## Si le salon n'existe pas
+                else:
+                    response = json.dumps({'type': 'demande_salon',
+                                        'status': 'ko',
+                                        'raison': 'salon_does_not_exist'})
+                    client.envoyer(response.encode())
+
+                database.connection.close()
+
+
             ## Si le message est un message de salon
             elif message['type'] == 'text':
                 
                 ## Si l'état de l'utilisateur est "kick"
                 if client.etat == "kick":
-                    database.cursor.execute("SELECT timeout FROM utilisateurs WHERE nom = %s", (user))
+                    database.cursor.execute("SELECT timeout FROM utilisateurs WHERE nom = %s", (client.nom))
                     timeout = database.cursor.fetchone()
 
-                    database.cursor.execute("SELECT raison FROM utilisateurs WHERE nom = %s", (user))
+                    database.cursor.execute("SELECT raison FROM utilisateurs WHERE nom = %s", (client.nom))
                     raison = database.cursor.fetchone()
 
                     response = json.dumps({'type': 'connexion',
@@ -133,7 +171,7 @@ def handler(client:Client, clients:list) -> None:
                 
                 ## Si l'état de l'utilisateur est "ban"
                 elif client.etat == "ban":
-                    database.cursor.execute("SELECT raison FROM utilisateurs WHERE nom = %s", (user))
+                    database.cursor.execute("SELECT raison FROM utilisateurs WHERE nom = %s", (client.nom))
                     raison = database.cursor.fetchone()
 
                     response = json.dumps({'type': 'connexion',
@@ -145,19 +183,19 @@ def handler(client:Client, clients:list) -> None:
                     message = message['message']
 
 
-                    ip = client.addr()
+                    ip = client.addr
                     date_message = datetime.datetime.now()
 
                     ## Stock le message dans la base de données
                     database.cursor.execute("INSERT INTO messages (user, salon, date_message, ip, body) VALUES (%s, %s, %s, %s, %s)",
-                                            (user.nom(), salon, date_message, ip, message))
+                                            (client.nom, salon, date_message, ip, message))
                     database.connection.commit()
                     
                     for cl in clients:
                         if cl != client:
                             
                             ## Envoie le messages aux autres utilisateurs du salons dont leur état est "valid"
-                            if cl.etat() == "valid" and salon in cl.salon():
+                            if cl.etat == "valid" and salon in cl.salon:
                                 cl.envoyer(data.encode())
                     
                     database.connection.close()
@@ -168,7 +206,7 @@ def handler(client:Client, clients:list) -> None:
 
                 if client.etat() != "valid":
                     response = json.dumps({'type': 'not_valid_sender', 
-                                        'status': user.etat()})
+                                        'status': client.etat})
                     client.envoyer(response.encode())
 
                 else:
@@ -176,11 +214,11 @@ def handler(client:Client, clients:list) -> None:
                     if database.cursor.rowcount > 0:
                         message = message['message']
 
-                        ip = client.addr()
+                        ip = client.addr
                         date_message = datetime.datetime.now()
 
-                        salon1 = user + to_user
-                        salon2 = to_user + user
+                        salon1 = client.nom + to_user.nom
+                        salon2 = to_user.nom + client.nom
                         
                         ## Créer un salon privé si il n'existe pas
                         database.cursor.execute("SELECT nom FROM salons WHERE nom = %s", (salon1))
@@ -196,10 +234,10 @@ def handler(client:Client, clients:list) -> None:
                         else:
                             salon = salon1
                     
-                        if to_user.etat() == "valid":
+                        if to_user.etat == "valid":
                             ## Stock le message dans la base de données
                             database.cursor.execute("INSERT INTO messages (user, salon, date_message, ip, body) VALUES (%s, %s, %s, %s, %s)",
-                                                (client.nom(), salon, date_message, ip, message))
+                                                (client.nom, salon, date_message, ip, message))
                             database.connection.commit()
 
                             ## Envoie le message à l'utilisateur
@@ -207,7 +245,7 @@ def handler(client:Client, clients:list) -> None:
 
                         else:
                             response = json.dumps({'type': 'not_valid_receiver', 
-                                                'status': to_user.etat()})
+                                                'status': to_user.etat})
                             client.envoyer(response.encode())
 
                         database.connection.close()
