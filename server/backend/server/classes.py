@@ -6,6 +6,7 @@ class Client:
         self.__conn = conn
         self.__address = address
         self.__nom = ""
+        self.__etat = 
         self.__salon = []
 
         clients.append(self)
@@ -40,7 +41,7 @@ class Client:
     @property
     def salon(self) -> list:
         return self.__salon
-    @etat.setter
+    @salon.setter
     def salon(self, salon:list):
         if isinstance(salon, list):
             self.__salon = salon

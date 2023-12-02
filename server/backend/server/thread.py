@@ -9,12 +9,15 @@ def handler(client:Client, clients) -> None:
             data = client.conn().recv(1024).decode()
             message = json.loads(data)
 
+            ## Si le message est une demande d'inscription
             if message['type'] == 'inscription':
                 user = message['user']
                 hash_mdp = message['hash_mdp']
                 demande = message['demande']
 
                 database.cursor.execute("SELECT * FROM utilisateurs WHERE nom = %s", (user))
+                
+                ## Si le nom n'est pas déjà utilisé
                 if database.cursor.rowcount == 0:
                     client.nom = user
 
@@ -28,7 +31,7 @@ def handler(client:Client, clients) -> None:
                                         'status': 'ok'})
                     client.conn().send(response.encode())
                     
-                    
+                ## Si le nom est déjà utilisé
                 else:
                     response = json.dumps({'type': 'inscription',
                                         'status': 'ko',
@@ -37,25 +40,32 @@ def handler(client:Client, clients) -> None:
                 
                 database.connection.close()
 
+            ## Si le message est une demande de connexion
             if message['type'] == 'connexion':
                 user = message['user']
                 hash_mdp = message['hash_mdp']
 
                 database.cursor.execute("SELECT * FROM utilisateurs WHERE nom = %s AND mdp = %s", (user, hash_mdp))
+                
+                ## Si le nom existe et que le mot de passe est correct
                 if database.cursor.rowcount > 0:
                     client.nom = user
 
+                    ## Récupère l'état de l'utilisateur
                     database.cursor.execute("SELECT etat FROM utilisateurs WHERE nom = %s", (user))
                     client.etat = database.cursor.fetchone()
-
+                    
+                    ## Récupère les salons de l'utilisateur
                     database.cursor.execute("SELECT salon FROM salons, utilisateurs WHERE utilisateur.nom = %s", (user))
                     salon = database.cursor.fetchall()
 
+                    ## Si l'état de l'utilisateur est "valid"
                     if client.etat == "valid":
                         response = json.dumps({'type': 'connexion',
                                             'status': 'ok'})
                         client.conn().send(response.encode())
                     
+                    ## Si l'état de l'utilisateur est "kick"
                     elif client.etat == "kick":
                         database.cursor.execute("SELECT timeout FROM utilisateurs WHERE nom = %s", (user))
                         timeout = database.cursor.fetchone()
@@ -68,6 +78,7 @@ def handler(client:Client, clients) -> None:
                                             'timeout': timeout,
                                             'raison': raison})
                     
+                    ## Si l'état de l'utilisateur est "ban"
                     elif client.etat == "ban":
                         database.cursor.execute("SELECT raison FROM utilisateurs WHERE nom = %s", (user))
                         raison = database.cursor.fetchone()
@@ -75,14 +86,16 @@ def handler(client:Client, clients) -> None:
                         response = json.dumps({'type': 'connexion',
                                             'status': 'ban',
                                             'raison': raison})
-                    
+                
+                ## Si le nom n'existe pas ou que le mot de passe est incorrect
                 else:
                     response = json.dumps({'type': 'connexion', 
                                         'status': 'ko'})
                     client.conn().envoyer(response.encode())
                 
                 database.connection.close()
-      
+
+            ## Si le message est un message de salon
             elif message['type'] == 'text':
                 user = Client(message['user'])
                 salon = message['salon']
@@ -91,17 +104,21 @@ def handler(client:Client, clients) -> None:
                 ip = client.addr()
                 date_message = datetime.datetime.now()
 
+                ## Stock le message dans la base de données
                 database.cursor.execute("INSERT INTO messages (user, salon, date_message, ip, body) VALUES (%s, %s, %s, %s, %s)",
                                         (user.nom(), salon, date_message, ip, message))
                 database.connection.commit()
                 
                 for cl in clients:
                     if cl != client:
+                        
+                        ## Envoie le messages aux autres utilisateurs du salons dont leur état est "valid"
                         if cl.etat() == "valid" and salon in cl.salon():
                             cl.envoyer(data.encode())
                 
                 database.connection.close()
             
+            ## Si le message est un message privé
             elif message['type'] == 'private':
                 user = Client(message['user'])
                 to_user = Client(message['to_user'])
@@ -115,7 +132,8 @@ def handler(client:Client, clients) -> None:
 
                     salon1 = user + to_user
                     salon2 = to_user + user
-
+                    
+                    ## Créer un salon privé si il n'existe pas
                     database.cursor.execute("SELECT nom FROM salons WHERE nom = %s", (salon1))
                     if database.cursor.rowcount == 0:
                         database.cursor.execute("SELECT nom FROM salons WHERE nom = %s", (salon2))
@@ -130,9 +148,12 @@ def handler(client:Client, clients) -> None:
                         salon = salon1
                 
                     if to_user.etat() == "valid":
+                        ## Stock le message dans la base de données
                         database.cursor.execute("INSERT INTO messages (user, salon, date_message, ip, body) VALUES (%s, %s, %s, %s, %s)",
                                              (user, salon, date_message, ip, message))
                         database.connection.commit()
+
+                        ## Envoie le message à l'utilisateur
                         to_user.envoyer(data.encode())
                     
                     database.connection.close()
