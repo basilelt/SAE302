@@ -116,10 +116,11 @@ def handler(client:Client, clients:list) -> None:
                 database.connection.close()
 
             elif message['type'] == 'deconnexion':
+                client.close
+                clients.remove(client)
 
             elif message['type'] == 'demande_salon':
                 salon = message['salon']
-
                 database.cursor.execute("SELECT * FROM salons WHERE nom = %s", (salon))
                 
                 ## Si le salon existe

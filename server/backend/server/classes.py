@@ -59,3 +59,8 @@ class Client:
     def envoyer(self, data:str):
         self.__conn.send(data)
 
+    ## Méthode permettant de fermer la connexion
+    def close(self):
+        self.__conn.close()
+        
+
