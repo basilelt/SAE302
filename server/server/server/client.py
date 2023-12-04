@@ -1,8 +1,8 @@
 import threading, socket
-from thread import handler
+from server.server.message_handler import handler
 
 class Client:
-    def __init__(self, conn, address, host, port, clients):
+    def __init__(self, conn, address, host, port, clients, server):
         self.__conn = conn
         self.__address = address
 
@@ -12,7 +12,7 @@ class Client:
         self.__salon = []
 
         clients.append(self)
-        threading.Thread(target=handler, args=(self, host, port, clients)).start()
+        threading.Thread(target=handler, args=(self, host, port, clients, server)).start()
 
     ## Getter de l'attribut conn
     @property
@@ -45,11 +45,13 @@ class Client:
     def salon(self) -> list:
         return self.__salon
     @salon.setter
-    def salon(self, salon:list):
+    def salon(self, salon):
         if isinstance(salon, list):
             self.__salon = salon
-        if isinstance(salon, str):
+        elif isinstance(salon, str):
             self.__salon.append(salon)
+        else:
+            raise TypeError("Salon doit être une liste ou une chaîne de caractères")
 
     ## Méthode permettant de recevoir des données
     def receive(self) -> str:
@@ -57,7 +59,7 @@ class Client:
 
     ## Méthode permettant d'envoyer des données
     def envoyer(self, data:str):
-        self.__conn.send(data)
+        self.__conn.send(data.encode())
 
     ## Méthode permettant de fermer la connexion
     def close(self):
