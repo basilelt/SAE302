@@ -4,14 +4,26 @@ from .client import Client
 from .server import Server
 from .types import *
 
+## Configure logging
 logging.basicConfig(filename='server.log', level=logging.ERROR, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
-def handler(client:Client, clients:list, server:Server) -> None:
+def handler(client:Client, clients:list, server:Server):
+    """
+    Handle client messages.
+
+    Args:
+        client (Client): The client.
+        clients (list): The list of clients.
+        server (Server): The server.
+    """
     while not server.stop_clients:
         try:
             data = client.receive()
-            message = json.loads(data)
-            handle_message(message, client, clients, server)
+            try:
+                message = json.loads(data)
+                handle_message(message, client, clients, server)
+            except json.JSONDecodeError:
+                logging.error("Failed to decode JSON")
         except(ConnectionResetError):
             logging.error("Connection reset")
         except(BrokenPipeError):
@@ -19,21 +31,29 @@ def handler(client:Client, clients:list, server:Server) -> None:
         except Exception as e:
             logging.error(f"Unexpected error: {e}")
 
-def handle_message(message, client, clients, server):
-    if message['type'] == 'inscription':
-        handle_inscription_message(message, client, server)
-    elif message['type'] == 'connexion':
-        handle_connexion_message(message, client, server)
-    elif message['type'] == 'deconnexion':
-        handle_deconnexion_message(client, clients)
-    elif message['type'] == 'demande_salon':
-        handle_demande_salon_message(message, client, server)
-    elif message['type'] == 'text':
-        handle_text_message(message, clients, client, server)
-    elif message['type'] == 'private':
-        handle_private_message(message, clients, client, server)
+def handle_message(message:dict, client:Client, clients:list, server:Server):
+    """
+    Handle a specific type of message.
 
-def handle_deconnexion_message(client, clients):
-    client.close()
-    clients.remove(client)
-    
+    Args:
+        message (dict): The message.
+        client (Client): The client.
+        clients (list): The list of clients.
+        server (Server): The server.
+    """
+    message_handlers = {
+        'signup': handle_signup_message,
+        'signin': handle_signin_message,
+        'disconnect': handle_disconnect_message,
+        'pending_room': handle_pending_room_message,
+        'public': handle_public_message,
+        'private': handle_private_message
+    }
+
+    ## Call the corresponding handler
+    handler_message = message_handlers.get(message['type'])
+    if handler_message:
+        handler_message(message, client, clients, server)
+    else:
+        logging.error(f"Unknown message type: {message['type']}")
+        
