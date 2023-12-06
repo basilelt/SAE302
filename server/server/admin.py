@@ -109,11 +109,23 @@ def admin_cmd(server:'Server'):
                 server.kick_user(username, timeout, reason)
             except IndexError:
                 print("Please specify a username")
+        elif command.startswith("unkick"):
+            try:
+                username = command.split(" ")[1]
+                server.unkick_user(username)
+            except IndexError:
+                print("Please specify a username")
         elif command.startswith("ban"):
             try:
                 username = command.split(" ")[1]
                 reason = " ".join(command.split(" ")[2:])
                 server.ban_user(username, reason)
+            except IndexError:
+                print("Please specify a username")
+        elif command.startswith("unban"):
+            try:
+                username = command.split(" ")[1]
+                server.unban_user(username)
             except IndexError:
                 print("Please specify a username")
         elif command == "shutdown":
@@ -122,4 +134,3 @@ def admin_cmd(server:'Server'):
             print("Server has shut down.")
         else:
             print("Invalid command. Type 'help' for a list of commands.")
-

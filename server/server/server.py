@@ -150,6 +150,22 @@ class Server:
                              'reason': reason})
                 break
     
+    def unkick_user(self, username:str):
+        """
+        Unkick a user from the server.
+
+        Args:
+            username (str): The username.
+        """
+        for client in self.clients:
+            if client.name == username:
+                self.database.execute_sql_query("UPDATE users SET state = 'valid', reason = NULL, timeout = NULL WHERE name = %s",
+                                                (username,))
+                
+                client.state = 'valid'
+                client.send({'type': 'unkick'})
+                break
+    
     def ban_user(self, username:str, reason:str):
         """
         Ban a user from the server.
@@ -168,3 +184,19 @@ class Server:
                              'reason': reason})
                 break
     
+    def unban_user(self, username:str):
+        """
+        Unban a user from the server.
+
+        Args:
+            username (str): The username.
+        """
+        for client in self.clients:
+            if client.name == username:
+                self.database.execute_sql_query("UPDATE users SET state = 'valid', reason = NULL WHERE name = %s",
+                                                (username,))
+                
+                client.state = 'valid'
+                client.send({'type': 'unban'})
+                break
+            
