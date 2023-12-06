@@ -29,6 +29,10 @@ def main():
     try:
         server = Server(host, port)
         server.run()
+    except KeyboardInterrupt:
+        print(f"\nServer is shutting down...")
+        server.close()
+        print("Server has shut down.")
     except Exception as e:
         logging.error(f"Failed to run the server: {e}")
 

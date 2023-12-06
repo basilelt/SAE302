@@ -99,3 +99,12 @@ class Server:
 
         ## Close server socket
         sock.close()
+
+    def close(self):
+        """
+        Close the server.
+        """
+        self.stop_server = True
+        self.stop_clients = True
+        self.database.close()
+        

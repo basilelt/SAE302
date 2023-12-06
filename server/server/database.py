@@ -99,3 +99,7 @@ class DatabaseConnection:
                                 'date_message': date_message,
                                 'ip': ip,
                                 'body': body})
+        
+    def close(self):
+        """Closes the database connection."""
+        self.engine.dispose()
