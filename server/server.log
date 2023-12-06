@@ -8,3 +8,7 @@
 2023-12-06 12:44:23,492 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'
 2023-12-06 12:47:55,690 ERROR root Thread-1 (run) : Failed to handle a client: can't create new thread at interpreter shutdown
 2023-12-06 12:47:55,691 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'
+2023-12-06 13:54:45,500 ERROR root Thread-1 (run) : Failed to handle a client: can't create new thread at interpreter shutdown
+2023-12-06 13:54:45,501 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'
+2023-12-06 13:55:03,019 ERROR root Thread-1 (run) : Failed to handle a client: can't create new thread at interpreter shutdown
+2023-12-06 13:55:03,020 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'

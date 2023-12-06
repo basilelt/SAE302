@@ -28,6 +28,8 @@ def convert_to_date(time_str:str) -> datetime:
     else:
         raise ValueError("Invalid time unit. Use 's' for seconds, 'm' for minutes, 'h' for hours, 'd' for days, or 'y' for years.")
 
+################################################################################################################
+
 def admin_console(server:'Server'):
     """
     Display the admin console.
@@ -52,6 +54,9 @@ def admin_cmd(server:'Server'):
             print("Available commands:")
             print("help - display this help message")
             print("users - display a list of all users")
+            print("rooms - display a list of all rooms")
+            print("pending rooms <username> - display a list of pending rooms for a user")
+            print("accept pending <username> <room1,room2,...> - accept pending rooms for a user")
             print("kick <username> <timeout> <reason> - kick a user")
             print("ban <username> <reason> - ban a user")
             print("shutdown - shutdown the server")
@@ -66,6 +71,36 @@ def admin_cmd(server:'Server'):
             print("Rooms:")
             for room in server.rooms:
                 print(room)
+        elif command.startswith("pending rooms"):
+            try:
+                username = command.split(" ")[2]
+                print(f"Pending rooms for {username}:")
+                for client in server.clients:
+                    if client.name == username:
+                        for room in client.pending_rooms:
+                            print(room)
+                        break
+            except IndexError:
+                print("Please specify a username")
+        elif command.startswith("accept pending"):
+            try:
+                username = command.split(" ")[2]
+                rooms = command.split(" ")[3]
+                if rooms == "all":
+                    for client in server.clients:
+                        if client.name == username:
+                            for room in client.pending_rooms:
+                                client.addroom(server, room) 
+                            break
+                else:
+                    for room in rooms.split(","):
+                        for client in server.clients:
+                            if client.name == username:
+                                client.addroom(server, room)
+                                break
+            except IndexError:
+                print("Please specify a username and a room")
+
         elif command.startswith("kick"):
             try:
                 username = command.split(" ")[1]

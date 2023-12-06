@@ -72,9 +72,13 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
             client.name = user
             client.state = server.database.fetch_user_state(user)
                      
-            result = server.database.fetch_one("SELECT room FROM rooms, users WHERE users.name = ?",
+            result = server.database.fetch_all("SELECT name FROM rooms, users WHERE users.name = ?",
                                                (user,))
             client.rooms = result if result else None
+
+            result = server.database.fetch_all("SELECT pending_rooms FROM users WHERE users.name = ?",
+                                               (user,))
+            client.pending_rooms = result if result else None
 
             if client.state == "valid":
                 ## Valid user
@@ -152,39 +156,22 @@ def handle_pending_room_message(message:dict, client:'Client', _:list, server:'S
     room = message['room']
 
     if not server.database.room_exists(room):
-        try:
-            ## Create room and assign to client
-            server.database.execute_sql_query("INSERT INTO rooms (name) VALUES (?)", (room,))
-            client.rooms = room
-            response = json.dumps({'type': 'pending_room',
-                                   'status': 'ok'})
-        except Exception as e:
-            ## Handle room creation errors
-            response = json.dumps({'type': 'pending_room',
-                                   'status': 'error',
-                                   'reason': str(e)})
+        ## Room doesn't exist
+        response = json.dumps({'type': 'pending_room',
+                               'status': 'error',
+                               'reason': 'room_does_not_exist'})
+    elif room not in client.rooms:
+        client.pending_rooms.append(room)
+        server.database.execute_sql_query("UPDATE users SET pending_rooms = ? WHERE name = ?",
+                                                  (','.join(client.pending_rooms), client.name,))
+        response = json.dumps({'type': 'pending_room',
+                               'status': 'ok'})
+           
     else:
-        result = server.database.fetch_all("SELECT name, name FROM rooms, users WHERE users.name = ? AND rooms.name = ?",
-                                           (client.name, room,))
-
-        if len(result) == 0:
-            client.rooms = room
-            try:
-                ## Add client to room
-                server.database.execute_sql_query("UPDATE users SET room = ? WHERE name = ?",
-                                                  (client.rooms, client.name,))
-                response = json.dumps({'type': 'pending_room',
-                                       'status': 'ok'})
-            except Exception as e:
-                ## Handle room assignment errors
-                response = json.dumps({'type': 'pending_room',
-                                       'status': 'error',
-                                       'reason': str(e)})
-        else:
-            ## 'Client' already in room
-            response = json.dumps({'type': 'pending_room',
-                                   'status': 'error',
-                                   'reason': 'already_in_room'})
+        ## 'Client' already in room
+        response = json.dumps({'type': 'pending_room',
+                               'status': 'error',
+                               'reason': 'already_in_room'})
 
     ## Send response
     client.send(response.encode())
@@ -262,7 +249,7 @@ def handle_private_message(message:dict, clients:list, client:'Client', server:'
         else:
             ## Extract message details
             message_text = message['message']
-            ip = client.addr
+            ip = client.address
             date_message = datetime.datetime.now()
             room = ''.join(sorted([client.name, to_user.name]))
 

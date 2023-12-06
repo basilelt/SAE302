@@ -7,7 +7,7 @@ USE `chat`;
 CREATE TABLE `users` (
   `name` VARCHAR(40) UNIQUE PRIMARY KEY NOT NULL,
   `password` VARCHAR(60) NOT NULL,
-  `pending_room` VARCHAR(2000),
+  `pending_rooms` VARCHAR(2000),
   `state` VARCHAR(5) NOT NULL DEFAULT "valid",
   `reason` VARCHAR(2000),
   `timeout` TIMESTAMP,

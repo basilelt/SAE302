@@ -52,6 +52,8 @@ class Server:
             for room in rooms:
                 self.rooms.append(room)
 
+    ############################################################################################################
+
     def run(self):
         """
         Run the server. It creates the server socket and handles client connections.
@@ -123,8 +125,10 @@ class Server:
         disconnect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         disconnect_socket.connect((self.host, self.port))
         disconnect_socket.close()
-        
+
         self.database.close()
+
+    ############################################################################################################
         
     def kick_user(self, username:str, timeout:'datetime', reason:str):
         """
