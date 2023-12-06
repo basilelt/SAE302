@@ -6,6 +6,12 @@ if TYPE_CHECKING:
     from .server import Server
 
 def convert_to_date(time_str:str) -> datetime:
+    """
+    Convert a string to a datetime object.
+
+    Args:
+        time_str (str): The string to convert.
+    """
     number = int(time_str[:-1])
     unit = time_str[-1]
 
@@ -25,6 +31,9 @@ def convert_to_date(time_str:str) -> datetime:
 def admin_console(server:'Server'):
     """
     Display the admin console.
+
+    Args:
+        server ('Server'): The server.
     """
     print("Admin console")
     print("Type 'help' for a list of commands.")
@@ -33,6 +42,9 @@ def admin_console(server:'Server'):
 def admin_cmd(server:'Server'):
     """
     Admin commands to manage the server.
+
+    Args:
+        server ('Server'): The server.
     """
     while not server.stop_server:
         command = input()

@@ -43,9 +43,12 @@ def main():
         ## Handle keyboard interrupt
         print(f"\nServer is shutting down...")
         server.close()
+        
+        ## Wait for threads to finish
         server_thread.join()
         console_thread.join()
         admin_thread.join()
+        
         print("Server has shut down.")
     except Exception as e:
         print(f"Failed to run the server: {e}")
