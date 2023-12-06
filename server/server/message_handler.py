@@ -1,20 +1,24 @@
 import logging
 import json
-from .client import Client
-from .server import Server
 from .types import *
+
+## Import the types for documentation purposes
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .client import Client
+    from .server import Server
 
 ## Configure logging
 logging.basicConfig(filename='server.log', level=logging.ERROR, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
-def handler(client:Client, clients:list, server:Server):
+def handler(client:'Client', clients:list, server:'Server'):
     """
     Handle client messages.
 
     Args:
-        client (Client): The client.
+        client ('Client'): The client.
         clients (list): The list of clients.
-        server (Server): The server.
+        server ('Server'): The server.
     """
     while not server.stop_clients:
         try:
@@ -31,15 +35,15 @@ def handler(client:Client, clients:list, server:Server):
         except Exception as e:
             logging.error(f"Unexpected error: {e}")
 
-def handle_message(message:dict, client:Client, clients:list, server:Server):
+def handle_message(message:dict, client:'Client', clients:list, server:'Server'):
     """
     Handle a specific type of message.
 
     Args:
         message (dict): The message.
-        client (Client): The client.
+        client ('Client'): The client.
         clients (list): The list of clients.
-        server (Server): The server.
+        server ('Server'): The server.
     """
     message_handlers = {
         'signup': handle_signup_message,

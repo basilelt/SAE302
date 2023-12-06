@@ -42,7 +42,7 @@ class DatabaseConnection:
     def connect(self):
         """Connects to the MySQL database."""
         try:
-            self.engine = create_engine("mysql+pymysql://root:@localhost/chat", poolclass=QueuePool)
+            self.engine = create_engine("mysql+pymysql://chat:@localhost/chat", poolclass=QueuePool)
         except SQLAlchemyError as e:
             print(f"Error connecting to database: {e}")
 

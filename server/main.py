@@ -1,7 +1,7 @@
 import argparse
 import sys
 import logging
-from .server.server import Server
+from server.server import Server
 
 def main():
     """

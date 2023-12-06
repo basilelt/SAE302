@@ -1,17 +1,21 @@
 import json
 import datetime
 import bcrypt
-from .client import Client
-from .server import Server
 
-def handle_signup_message(message:dict, client:Client, _:list, server:Server):
+## Import the types for documentation purposes
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .client import Client
+    from .server import Server
+
+def handle_signup_message(message:dict, client:'Client', _:list, server:'Server'):
     """
     Handle signup message from the client.
 
     Args:
         message (dict): The signup message.
-        client (Client): The client.
-        server (Server): The server.
+        client ('Client'): The client.
+        server ('Server'): The server.
     """
     user = message['user']
     password = message['password'].encode('utf-8')
@@ -43,14 +47,14 @@ def handle_signup_message(message:dict, client:Client, _:list, server:Server):
 
 ################################################################################################################
 
-def handle_signin_message(message:dict, client:Client, _:list, server:Server):
+def handle_signin_message(message:dict, client:'Client', _:list, server:'Server'):
     """
     Handle signin message from the client.
 
     Args:
         message (dict): The signin message.
-        client (Client): The client.
-        server (Server): The server.
+        client ('Client'): The client.
+        server ('Server'): The server.
     """
     user = message['user']
     password = message['password'].encode('utf-8')
@@ -113,12 +117,12 @@ def handle_signin_message(message:dict, client:Client, _:list, server:Server):
 
 ################################################################################################################
 
-def handle_disconnect_message(_1:dict, client:Client, clients:list, _2:Server):
+def handle_disconnect_message(_1:dict, client:'Client', clients:list, _2:'Server'):
     """
     Handle disconnect message from the client.
 
     Args:
-        client (Client): The client.
+        client ('Client'): The client.
         clients (list): The list of all clients.
     """
     try:
@@ -134,14 +138,14 @@ def handle_disconnect_message(_1:dict, client:Client, clients:list, _2:Server):
 
 ################################################################################################################
 ### It needs to have a different behavior, only for example
-def handle_pending_room_message(message:dict, client:Client, _:list, server:Server):
+def handle_pending_room_message(message:dict, client:'Client', _:list, server:'Server'):
     """
     Handle pending room message from the client.
 
     Args:
         message (dict): The pending room message.
-        client (Client): The client.
-        server (Server): The server.
+        client ('Client'): The client.
+        server ('Server'): The server.
     """
     room = message['room']
 
@@ -175,7 +179,7 @@ def handle_pending_room_message(message:dict, client:Client, _:list, server:Serv
                                        'status': 'error',
                                        'reason': str(e)})
         else:
-            ## Client already in room
+            ## 'Client' already in room
             response = json.dumps({'type': 'pending_room',
                                    'status': 'error',
                                    'reason': 'already_in_room'})
@@ -185,15 +189,15 @@ def handle_pending_room_message(message:dict, client:Client, _:list, server:Serv
 
 ################################################################################################################
 
-def handle_public_message(message:dict, clients:list, client:Client, server:Server):
+def handle_public_message(message:dict, clients:list, client:'Client', server:'Server'):
     """
     Handle public message from the client.
 
     Args:
         message (dict): The public message.
         clients (list): The list of all clients.
-        client (Client): The client.
-        server (Server): The server.
+        client ('Client'): The client.
+        server ('Server'): The server.
     """
     ## Check if the client is valid
     if client.state != "valid":
@@ -228,15 +232,15 @@ def handle_public_message(message:dict, clients:list, client:Client, server:Serv
 
 ################################################################################################################
 
-def handle_private_message(message:dict, clients:list, client:Client, server:Server):
+def handle_private_message(message:dict, clients:list, client:'Client', server:'Server'):
     """
     Handle private message from the client.
 
     Args:
         message (dict): The private message.
         clients (list): The list of all clients.
-        client (Client): The client.
-        server (Server): The server.
+        client ('Client'): The client.
+        server ('Server'): The server.
     """
     ## Find the recipient client
     to_user = None
