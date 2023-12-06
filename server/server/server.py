@@ -4,6 +4,10 @@ import logging
 from .client import Client
 from .database import DatabaseConnection
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from datetime import datetime
+
 ## Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -31,6 +35,8 @@ class Server:
         self.stop_clients = False
         self.host = host
         self.port = port
+        self.clients = []
+        self.rooms = []
         
         ## Initialize database connection
         self.database = DatabaseConnection()
@@ -39,6 +45,12 @@ class Server:
         except Exception as e:
             logging.error(f"An error occurred: {e}")
             raise e
+
+        ## Fetch rooms from database
+        rooms = self.database.get_rooms()
+        if rooms is not None:
+            for room in rooms:
+                self.rooms.append(room)
 
     def run(self):
         """
@@ -77,22 +89,22 @@ class Server:
         Args:
             sock (socket.socket): The server socket.
         """
-        clients = []
+
         while not self.stop_server:
             try:
                 ## Accept new client connection
                 conn, address = sock.accept()
 
                 ## Create new client
-                client = Client(conn, address, self.host, self.port, clients, self)
+                client = Client(conn, address, self.host, self.port, self.clients, self)
 
                 ## Add new client to clients list
-                clients.append(client)
+                self.clients.append(client)
             except Exception as e:
                 logging.error(f"Failed to handle a client: {e}")
 
         ## Close all client connections
-        for client in clients:
+        for client in self.clients:
             client.close()
 
         time.sleep(0.5)
@@ -108,3 +120,41 @@ class Server:
         self.stop_clients = True
         self.database.close()
         
+    def kick_user(self, username:str, timeout:'datetime', reason:str):
+        """
+        Kick a user from the server.
+
+        Args:
+            username (str): The username.
+            timeout ('datetime'): Date and time when the user can join the server again.
+            reason (str): The reason for kicking the user.
+        """
+        for client in self.clients:
+            if client.name == username:
+                self.database.execute_sql_query("UPDATE users SET state = 'kick', reason = %s, timeout = %s WHERE name = %s",
+                                                (reason, timeout, username))
+                
+                client.state = 'kick'
+                client.send({'type': 'kick',
+                             'timeout': timeout.strftime("%Y-%m-%d %H:%M:%S"),
+                             'reason': reason})
+                break
+    
+    def ban_user(self, username:str, reason:str):
+        """
+        Ban a user from the server.
+
+        Args:
+            username (str): The username.
+            reason (str): The reason for banning the user.
+        """
+        for client in self.clients:
+            if client.name == username:
+                self.database.execute_sql_query("UPDATE users SET state = 'ban', reason = %s WHERE name = %s",
+                                                (reason, username))
+                
+                client.state = 'ban'
+                client.send({'type': 'ban',
+                             'reason': reason})
+                break
+    

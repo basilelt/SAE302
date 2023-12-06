@@ -42,7 +42,7 @@ class DatabaseConnection:
     def connect(self):
         """Connects to the MySQL database."""
         try:
-            self.engine = create_engine("mysql+pymysql://chat:@localhost/chat", poolclass=QueuePool)
+            self.engine = create_engine("mysql+pymysql://chat:chat@localhost/chat", poolclass=QueuePool)
         except SQLAlchemyError as e:
             print(f"Error connecting to database: {e}")
 
@@ -84,6 +84,11 @@ class DatabaseConnection:
         result = self.fetch_one("SELECT password FROM users WHERE name = :user",
                                 {'user': user})
         return result[0][0].encode('utf-8') if result else None
+    
+    def get_rooms(self):
+        """Fetches all rooms from the database."""
+        result = self.fetch_all("SELECT name FROM rooms")
+        return [room[0] for room in result] if result else None
 
     def room_exists(self, room):
         """Checks if a room exists in the database."""

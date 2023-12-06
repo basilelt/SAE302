@@ -1,5 +1,6 @@
 import threading
 import socket
+import json
 from .message_handler import handler
 
 class Client:
@@ -29,7 +30,7 @@ class Client:
         self._conn = conn
         self._address = address
         self._name = ""
-        self._state = False
+        self._state = None
         self._rooms = []
         
         ## Add client to clients list
@@ -56,10 +57,10 @@ class Client:
         self._name = name
 
     @property
-    def state(self) -> bool:
+    def state(self) -> str:
         return self._state 
     @state.setter
-    def state(self, state:bool):
+    def state(self, state:str):
         self._state = state
 
     @property
@@ -102,9 +103,13 @@ class Client:
         """
         self._conn.send(data.encode())
 
-    def close(self):
+    def close(self, clients:list):
         """
         Close the client's connection.
         """
         self._conn.close()
+        clients.remove(self)
+        
+        
+        
         

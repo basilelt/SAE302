@@ -47,7 +47,7 @@ def handle_signup_message(message:dict, client:'Client', _:list, server:'Server'
 
 ################################################################################################################
 
-def handle_signin_message(message:dict, client:'Client', _:list, server:'Server'):
+def handle_signin_message(message:dict, client:'Client', clients:list, server:'Server'):
     """
     Handle signin message from the client.
 
@@ -96,6 +96,7 @@ def handle_signin_message(message:dict, client:'Client', _:list, server:'Server'
                                        'timeout': timeout,
                                        'reason': reason})
                 client.send(response)
+                client.close(clients)
                                      
             elif client.state == "ban":
                 ## Banned user
@@ -107,6 +108,7 @@ def handle_signin_message(message:dict, client:'Client', _:list, server:'Server'
                                        'status': 'ban',
                                        'reason': reason})
                 client.send(response)
+                client.close(clients)
     
     else:
         ## Non-existent user

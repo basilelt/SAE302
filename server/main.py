@@ -1,7 +1,9 @@
 import argparse
 import sys
 import logging
+import threading
 from server.server import Server
+from server.admin import admin_console, admin_cmd
 
 def main():
     """
@@ -28,12 +30,25 @@ def main():
     ## Start the server
     try:
         server = Server(host, port)
-        server.run()
+        
+        server_thread = threading.Thread(target=server.run)
+        console_thread = threading.Thread(target=admin_console, args=(server,))
+        admin_thread = threading.Thread(target=admin_cmd, args=(server,))
+
+        server_thread.start()
+        console_thread.start()
+        admin_thread.start()
+
     except KeyboardInterrupt:
+        ## Handle keyboard interrupt
         print(f"\nServer is shutting down...")
         server.close()
+        server_thread.join()
+        console_thread.join()
+        admin_thread.join()
         print("Server has shut down.")
     except Exception as e:
+        print(f"Failed to run the server: {e}")
         logging.error(f"Failed to run the server: {e}")
 
 if __name__ == "__main__":
