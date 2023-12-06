@@ -118,6 +118,12 @@ class Server:
         """
         self.stop_server = True
         self.stop_clients = True
+
+        ## Create a socket to unblock the server socket accept() method
+        disconnect_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        disconnect_socket.connect((self.host, self.port))
+        disconnect_socket.close()
+        
         self.database.close()
         
     def kick_user(self, username:str, timeout:'datetime', reason:str):

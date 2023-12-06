@@ -51,5 +51,6 @@ def main():
         print(f"Failed to run the server: {e}")
         logging.error(f"Failed to run the server: {e}")
 
+
 if __name__ == "__main__":
     main()

@@ -4,3 +4,7 @@
 2023-12-06 11:21:57,338 ERROR root MainThread : Failed to run the server: 'cryptography' package is required for sha256_password or caching_sha2_password auth methods
 2023-12-06 11:23:52,399 ERROR root MainThread : Failed to run the server: 'NoneType' object is not iterable
 2023-12-06 11:24:32,991 ERROR root MainThread : Failed to run the server: 'NoneType' object is not iterable
+2023-12-06 12:42:12,281 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'
+2023-12-06 12:44:23,492 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'
+2023-12-06 12:47:55,690 ERROR root Thread-1 (run) : Failed to handle a client: can't create new thread at interpreter shutdown
+2023-12-06 12:47:55,691 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'

@@ -37,7 +37,7 @@ class Client:
         clients.append(self)
 
         ## Start handling client messages
-        threading.Thread(target=handler, args=(self, host, port, clients, server)).start()
+        threading.Thread(target=handler, args=(self, clients, server)).start()
 
     ############################################################################################################
 
