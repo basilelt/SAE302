@@ -17,7 +17,7 @@ def handle_signup_message(message:dict, client:'Client', _:list, server:'Server'
         client ('Client'): The client.
         server ('Server'): The server.
     """
-    user = message['user']
+    user = message['username']
     password = message['password'].encode('utf-8')
 
     ## Hash the password

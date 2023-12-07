@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QWidget, QMainWindow, QPushButton, QLineEdit, QLabel
 from PyQt6.QtCore import Qt, QPropertyAnimation, QSize, QSequentialAnimationGroup
 from PyQt6.QtGui import QPalette, QColor, QShowEvent, QKeyEvent
 import os
-from ..backend.client import Client
+from backend.client import Client
 
 class LoginWindow(QMainWindow):
     """
@@ -355,5 +355,18 @@ class LoginWindow(QMainWindow):
         
 
     def onRegisterClicked(self):
-        
+        """
+        Handles the click event of the connect button.
+        """
+        try:
+            username = self.__user.text()
+            password = self.__password.text()
+            server = self.__server.text()
+            port = int(self.__port.text())
+            client = Client(username, password, server, port, register=True)
+        except Exception as err:
+            print(err)
+
+        if client.isconnected() == True:
+            pass
         pass
