@@ -1,5 +1,4 @@
 import sys
-import argparse
 import logging
 from PyQt6.QtWidgets import QApplication
 from interface.login import LoginWindow
