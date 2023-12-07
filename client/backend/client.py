@@ -1,102 +1,56 @@
-"""
-Ce module contient la logique du client pour une application de chat.
+import socket
+import threading
+import json
+import logging
+from handler import handle_message
 
-Il définit trois fonctions principales : `client`, `send` et `listen`.
+## Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-Fonctions
----------
-client(user:str, host: str, port: int) -> None
-    Établit une connexion avec le serveur à l'adresse et au port spécifiés, et lance deux threads pour envoyer et recevoir des messages.
+class Client():
+    def __init__(self, username:str, password:str, server:str, port:int):
+        self.username = username
+        self.password = password
+        self.server = server
+        self.port = port
 
-send(socket: socket.socket, user:str) -> None
-    Envoie des messages à travers la socket spécifiée. Les messages sont lus à partir de l'entrée standard.
+        self.listen_flag = False
+        self.login = False
 
-listen(socket: socket.socket) -> None
-    Écoute les messages sur la socket spécifiée et les affiche sur la sortie standard.
+        self.__socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__socket_tcp.connect((self.server, self.port))
 
+        self.send_login_info()
 
-Lève
-------
-socket.gaierror
-    Si une erreur se produit lors de la résolution de l'hôte.
-ConnectionRefusedError
-    Si la connexion est refusée.
-TimeoutError
-    Si une opération de socket dépasse le délai d'attente.
-KeyboardInterrupt
-    Si l'utilisateur interrompt le programme.
-ConnectionResetError
-    Si la connexion est réinitialisée pendant l'envoi d'un message.
-"""
+        thread_wait_ok = threading.Thread(target=self.logged_in())
 
-import socket, threading, time, re, sys
+    def listen(self, socket:socket.socket):
+        while not self.listen_flag:
+            try:
+                data = socket.recv(1024).decode()
+                try:
+                    message = json.loads(data)
+                    handle_message(self, message)
+                except json.JSONDecodeError:
+                    logging.error("Failed to decode JSON")
+            except(ConnectionResetError):
+                logging.error("Connection reset")
+            except(BrokenPipeError):
+                logging.error("Connection broken")
+            except Exception as e:
+                logging.error(f"Unexpected error: {e}")
 
-flag = False
+    def send_login_info(self):
+        data = {'type': 'signin',
+                'username': self.username,
+                'password': self.password}
+        self.__socket_tcp.send(json.dumps(data).encode())
 
-def client(user:str, host:str, port:int) -> None:
-    global flag
-    try:
-        client_socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket_tcp.connect((host, port))
-        threading.Thread(target=listen, args=(client_socket_tcp, user)).start()
-        send(client_socket_tcp, user)
-    except(socket.gaierror):
-        flag = True
-        print("Erreur lors de la résolution de l'hôte")
-    except(ConnectionRefusedError):
-        flag = True
-        print("Connexion refusée")
-    except(TimeoutError):
-        flag = True
-        print("Timeout")
-    except KeyboardInterrupt:
-        client_socket_tcp.send((user + ": " + "bye").encode())
-        flag = True
-        print("Client en cours d'extinction...")
-    except Exception as err:
-        flag = True
-        print(err)
-    finally:
-        time.sleep(1)
-        client_socket_tcp.close()
-        sys.exit()
-        
+    def logged_in(self):
+        test = self.login
+        while not test:
+            if self.login:
+                receive_thread = threading.Thread(target=self.listen(), args=(self.__socket_tcp,))
+                receive_thread.start()
+                test = True
 
-def send(socket:socket.socket, user:str) -> None:
-    global flag
-    try:
-        while not flag:
-            data = input()
-            socket.send((user + ": " + data).encode())
-            if data == "bye" or data == "arret":
-                flag = True
-    except(ConnectionResetError):
-        flag = True
-        print("Connexion réinitialisée")
-    except(BrokenPipeError):
-        flag = True
-        print("Rupture de la connexion")
-
-def listen(socket:socket.socket, user:str) -> None:
-    global flag
-    while not flag:
-        try:
-            data = socket.recv(1024).decode()
-
-            pattern_arret = r'^.*: arret'
-            match_arret = re.search(pattern_arret, data)
-
-            if match_arret:
-                flag = True
-                print("Client en cours d'extinction...")
-            elif data == user + ": " + "bye":
-                flag = True
-                print("Client en cours d'extinction...")
-            else:
-                print(data)
-        except(ConnectionResetError):
-            flag = True
-            print("Connexion réinitialisée")
-        except(BrokenPipeError):
-            flag = True
-            print("Rupture de la connexion")

@@ -39,6 +39,9 @@ class Client:
         self.pending_rooms = []
         self._rooms = []
         
+        ## See if the client is already connected correctly
+        self.login = False
+        
         ## Add client to clients list
         clients.append(self)
 

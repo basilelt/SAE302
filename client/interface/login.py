@@ -1,7 +1,8 @@
-from PyQt6.QtWidgets import QWidget, QMainWindow, QPushButton, QLineEdit, QLabel, QGridLayout, QFrame, QGroupBox, QVBoxLayout, QGraphicsDropShadowEffect
+from PyQt6.QtWidgets import QWidget, QMainWindow, QPushButton, QLineEdit, QLabel, QGridLayout, QFrame, QGroupBox, QVBoxLayout, QGraphicsDropShadowEffect, QApplication
 from PyQt6.QtCore import Qt, QPropertyAnimation, QSize, QSequentialAnimationGroup
 from PyQt6.QtGui import QPalette, QColor, QShowEvent, QKeyEvent
 import os
+from ..backend.client import Client
 
 class LoginWindow(QMainWindow):
     """
@@ -65,6 +66,10 @@ class LoginWindow(QMainWindow):
         self.setupWidgets()
         self.setupLayout()
         self.setupAnimations()
+
+        self.connect.clicked.connect(self.onConnectClicked)
+        self.quit.clicked.connect(self.onQuitClicked)
+        self.register.clicked.connect(self.onRegisterClicked)
 
     def setupCSS(self):
         """
@@ -325,10 +330,30 @@ class LoginWindow(QMainWindow):
                 self.connect.click()
                 
     def onConnectClicked(self):
-        pass
+        """
+        Handles the click event of the connect button.
+        """
+        try:
+            username = self.__user.text()
+            password = self.__password.text()
+            server = self.__server.text()
+            port = int(self.__port.text())
+            client = Client(username, password, server, port)
+        except Exception as err:
+            print(err)
+
+        if client.isconnected() == True:
+            pass
+        
+        
 
     def onQuitClicked(self):
-        pass
+        """
+        Handles the click event of the quit button.
+        """
+        QApplication.exit(0)
+        
 
     def onRegisterClicked(self):
+        
         pass
