@@ -342,7 +342,7 @@ class LoginWindow(QMainWindow):
         except Exception as err:
             print(err)
 
-        if client.isconnected() == True:
+        if client.isconnected == True:
             pass
         
         
@@ -367,6 +367,6 @@ class LoginWindow(QMainWindow):
         except Exception as err:
             print(err)
 
-        if client.isconnected() == True:
+        if client.isconnected == True:
             pass
-        pass
+        

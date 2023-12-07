@@ -8,9 +8,6 @@ if TYPE_CHECKING:
     from .client import Client
     from .server import Server
 
-## Configure logging
-logging.basicConfig(filename='server.log', level=logging.ERROR, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
-
 def handler(client:'Client', clients:list, server:'Server'):
     """
     Handle client messages.
@@ -25,6 +22,7 @@ def handler(client:'Client', clients:list, server:'Server'):
             data = client.receive()
             try:
                 message = json.loads(data)
+                print(message)
                 handle_message(message, client, clients, server)
             except json.JSONDecodeError:
                 logging.error("Failed to decode JSON")

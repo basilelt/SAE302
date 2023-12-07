@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from datetime import datetime
 
 ## Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='server.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 class Server:
     """
@@ -31,6 +31,8 @@ class Server:
             host (str): The host address.
             port (int): The port number.
         """
+        logging.info("Initializing server")
+
         self.stop_server = False
         self.stop_clients = False
         self.host = host
@@ -58,6 +60,7 @@ class Server:
         """
         Run the server. It creates the server socket and handles client connections.
         """
+        logging.info("Running server")
         try:
             ## Create server socket
             sock = self.create_socket()

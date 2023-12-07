@@ -53,6 +53,10 @@ def main():
     except Exception as e:
         print(f"Failed to run the server: {e}")
         logging.error(f"Failed to run the server: {e}")
+    finally:
+        server_thread.join()
+        console_thread.join()
+        admin_thread.join()
 
 
 if __name__ == "__main__":

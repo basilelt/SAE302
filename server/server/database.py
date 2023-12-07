@@ -51,6 +51,7 @@ class DatabaseConnection:
         try:
             with self.engine.connect() as connection:
                 result = connection.execute(text(query), params)
+                connection.commit()
                 return result
         except SQLAlchemyError as e:
             print(f"Error executing query: {e}")

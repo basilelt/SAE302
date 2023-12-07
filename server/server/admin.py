@@ -65,8 +65,8 @@ def admin_cmd(server:'Server'):
             print("timeout - 2d, 3h, 5m, etc.")
         elif command == "users":
             print("Users:")
-            for user in server.users:
-                print(user)
+            for user in server.clients:
+                print(user.name)
         elif command == "rooms":    
             print("Rooms:")
             for room in server.rooms:

@@ -1,6 +1,5 @@
 import threading
-import socket
-import json
+import logging
 from .message_handler import handler
 
 ## Import the types for documentation purposes
@@ -32,6 +31,8 @@ class Client:
             clients (list): The list of clients.
             server (Server): The server.
         """
+
+        logging.info("Initializing client")
         self.conn = conn
         self.address = address
         self.name = ""
@@ -47,6 +48,7 @@ class Client:
 
         ## Start handling client messages
         threading.Thread(target=handler, args=(self, clients, server)).start()
+        
 
     ############################################################################################################
 

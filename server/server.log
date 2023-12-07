@@ -1,14 +1,44 @@
-2023-12-06 11:02:22,011 ERROR root MainThread : Failed to run the server: 'NoneType' object is not iterable
-2023-12-06 11:03:36,269 ERROR root MainThread : Failed to run the server: 'NoneType' object is not iterable
-2023-12-06 11:20:49,127 ERROR root MainThread : Failed to run the server: 'cryptography' package is required for sha256_password or caching_sha2_password auth methods
-2023-12-06 11:21:57,338 ERROR root MainThread : Failed to run the server: 'cryptography' package is required for sha256_password or caching_sha2_password auth methods
-2023-12-06 11:23:52,399 ERROR root MainThread : Failed to run the server: 'NoneType' object is not iterable
-2023-12-06 11:24:32,991 ERROR root MainThread : Failed to run the server: 'NoneType' object is not iterable
-2023-12-06 12:42:12,281 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'
-2023-12-06 12:44:23,492 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'
-2023-12-06 12:47:55,690 ERROR root Thread-1 (run) : Failed to handle a client: can't create new thread at interpreter shutdown
-2023-12-06 12:47:55,691 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'
-2023-12-06 13:54:45,500 ERROR root Thread-1 (run) : Failed to handle a client: can't create new thread at interpreter shutdown
-2023-12-06 13:54:45,501 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'
-2023-12-06 13:55:03,019 ERROR root Thread-1 (run) : Failed to handle a client: can't create new thread at interpreter shutdown
-2023-12-06 13:55:03,020 ERROR root Thread-1 (run) : Failed to run the server: Client.close() missing 1 required positional argument: 'clients'
+2023-12-07 15:45:45,376 INFO root MainThread : Initializing server
+2023-12-07 15:45:45,407 INFO root Thread-1 (run) : Running server
+2023-12-07 15:45:49,279 INFO root Thread-1 (run) : Initializing client
+2023-12-07 15:45:49,279 ERROR root Thread-1 (run) : Failed to handle a client: can't create new thread at interpreter shutdown
+2023-12-07 15:47:40,132 INFO root MainThread : Initializing server
+2023-12-07 15:47:40,174 INFO root Thread-1 (run) : Running server
+2023-12-07 15:47:46,322 INFO root Thread-1 (run) : Initializing client
+2023-12-07 15:48:38,552 INFO root Thread-1 (run) : Initializing client
+2023-12-07 15:51:40,804 INFO root MainThread : Initializing server
+2023-12-07 15:51:40,847 INFO root Thread-1 (run) : Running server
+2023-12-07 15:51:42,926 INFO root Thread-1 (run) : Initializing client
+2023-12-07 15:52:11,236 INFO root MainThread : Initializing server
+2023-12-07 15:52:11,292 INFO root Thread-1 (run) : Running server
+2023-12-07 15:52:12,857 INFO root Thread-1 (run) : Initializing client
+2023-12-07 15:52:12,858 ERROR root Thread-4 (handler) : Unexpected error: argument 'password': 'str' object cannot be converted to 'PyBytes'
+2023-12-07 15:53:04,549 INFO root MainThread : Initializing server
+2023-12-07 15:53:04,586 INFO root Thread-1 (run) : Running server
+2023-12-07 15:53:09,803 INFO root Thread-1 (run) : Initializing client
+2023-12-07 15:53:09,804 ERROR root Thread-4 (handler) : Unexpected error: argument 'password': 'str' object cannot be converted to 'PyBytes'
+2023-12-07 15:53:49,431 INFO root MainThread : Initializing server
+2023-12-07 15:53:49,477 INFO root Thread-1 (run) : Running server
+2023-12-07 15:53:51,200 INFO root Thread-1 (run) : Initializing client
+2023-12-07 15:53:51,200 ERROR root Thread-4 (handler) : Unexpected error: argument 'password': 'str' object cannot be converted to 'PyBytes'
+2023-12-07 15:55:32,034 INFO root MainThread : Initializing server
+2023-12-07 15:55:32,072 INFO root Thread-1 (run) : Running server
+2023-12-07 15:55:35,408 INFO root Thread-1 (run) : Initializing client
+2023-12-07 15:56:22,635 INFO root MainThread : Initializing server
+2023-12-07 15:56:22,684 INFO root Thread-1 (run) : Running server
+2023-12-07 15:56:24,922 INFO root Thread-1 (run) : Initializing client
+2023-12-07 16:11:22,443 INFO root MainThread : Initializing server
+2023-12-07 16:11:22,504 INFO root Thread-1 (run) : Running server
+2023-12-07 16:11:24,742 INFO root Thread-1 (run) : Initializing client
+2023-12-07 16:11:54,190 INFO root Thread-1 (run) : Initializing client
+2023-12-07 16:14:03,237 INFO root MainThread : Initializing server
+2023-12-07 16:14:03,275 INFO root Thread-1 (run) : Running server
+2023-12-07 16:14:04,884 INFO root Thread-1 (run) : Initializing client
+2023-12-07 16:14:25,911 INFO root MainThread : Initializing server
+2023-12-07 16:14:25,949 INFO root Thread-1 (run) : Running server
+2023-12-07 16:14:32,319 INFO root Thread-1 (run) : Initializing client
+2023-12-07 16:19:04,766 INFO root MainThread : Initializing server
+2023-12-07 16:19:04,834 INFO root Thread-1 (run) : Running server
+2023-12-07 16:19:07,158 INFO root Thread-1 (run) : Initializing client
+2023-12-07 16:19:37,740 INFO root Thread-1 (run) : Initializing client
+2023-12-07 16:19:37,743 ERROR root Thread-5 (handler) : Unexpected error: Invalid salt

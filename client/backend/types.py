@@ -3,13 +3,17 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .client import Client
 
-def handle_signup_message():
+def handle_signup_message(client:'Client', message:dict):
     if message['status'] == "ok":
-    pass
-
+        client.isconnected = True
+        print("Successfully signed up")
+    elif message['status'] == "error":
+        reason = message['reason']
+    
 def handle_signin_message(client:'Client', message:dict):
     if message['status'] == "ok":
-        client.login = True            
+        client.isconnected = True
+        print("Successfully signed in")
     elif message['status'] == "error":
         reason = message['reason']
     elif message['status'] == "kick":

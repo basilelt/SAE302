@@ -15,10 +15,12 @@ class Client():
         self.port = port
 
         self.listen_flag = False
-        self.login = False
+        self.isconnected = False
 
         self.__socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__socket_tcp.connect((self.server, self.port))
+
+        threading.Thread(target=self.listen, args=(self.__socket_tcp,)).start()
 
         if register:
             self.send_signup_info()
@@ -32,6 +34,7 @@ class Client():
                 data = socket.recv(1024).decode()
                 try:
                     message = json.loads(data)
+                    print(message)
                     handle_message(self, message)
                 except json.JSONDecodeError:
                     logging.error("Failed to decode JSON")
