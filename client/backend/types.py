@@ -12,6 +12,8 @@ def handle_signup_message(client:'Client', message:dict):
     
 def handle_signin_message(client:'Client', message:dict):
     if message['status'] == "ok":
+        client.all_rooms = message['rooms'].split(',')
+        client.rooms = message['rooms'].split(',')
         client.isconnected = True
         print("Successfully signed in")
     elif message['status'] == "error":

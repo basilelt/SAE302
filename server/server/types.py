@@ -86,7 +86,9 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
             if client.state == "valid":
                 ## Valid user
                 response = json.dumps({'type': 'signin',
-                                       'status': 'ok'})
+                                       'status': 'ok',
+                                       'all_rooms': server.database.get_rooms(),
+                                       'rooms': client.rooms,})
                 client.login = True
                 client.send(response)
                                   

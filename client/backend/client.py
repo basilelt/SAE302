@@ -17,11 +17,14 @@ class Client():
         self.listen_flag = False
         self.isconnected = False
 
+        self.all_rooms = []
+        self.rooms = []
+
         self.__socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__socket_tcp.connect((self.server, self.port))
 
-        self.thread = threading.Thread(target=self.listen, args=(self.__socket_tcp,))
-        self.thread.start()
+        self.thread_listen = threading.Thread(target=self.listen, args=(self.__socket_tcp,))
+        self.thread_listen.start()
 
         if register:
             self.send_signup_info()
@@ -61,7 +64,5 @@ class Client():
     def close(self):
         self.listen_flag = True
         self.__socket_tcp.send(json.dumps({'type': 'disconnect'}).encode())
-        self.thread.join()
+        self.thread_listen.join()
         self.__socket_tcp.close()
-
-

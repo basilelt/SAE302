@@ -28,6 +28,30 @@ def convert_to_date(time_str:str) -> datetime:
     else:
         raise ValueError("Invalid time unit. Use 's' for seconds, 'm' for minutes, 'h' for hours, 'd' for days, or 'y' for years.")
 
+def convert_to_date_minus(time_str:str) -> datetime:
+    """
+    Convert a string to a datetime object.
+
+    Args:
+        time_str (str): The string to convert.
+    """
+    number = int(time_str[:-1])
+    unit = time_str[-1]
+
+    if unit == 's':
+        return datetime.now() - timedelta(seconds=number)
+    elif unit == 'm':
+        return datetime.now() - timedelta(minutes=number)
+    elif unit == 'h':
+        return datetime.now() - timedelta(hours=number)
+    elif unit == 'd':
+        return datetime.now() - timedelta(days=number)
+    elif unit == 'y':
+        return datetime.now() - timedelta(days=number*365)
+    else:
+        raise ValueError("Invalid time unit. Use 's' for seconds, 'm' for minutes, 'h' for hours, 'd' for days, or 'y' for years.")
+
+
 ################################################################################################################
 
 def admin_console(server:'Server'):
@@ -53,6 +77,7 @@ def admin_cmd(server:'Server'):
         if command == "help":
             print("Available commands:")
             print("help - display this help message")
+            print("messages <time> - display a list of all messages since a time")
             print("users - display a list of all users")
             print("rooms - display a list of all rooms")
             print("pending rooms <username> - display a list of pending rooms for a user")
@@ -60,9 +85,15 @@ def admin_cmd(server:'Server'):
             print("kick <username> <timeout> <reason> - kick a user")
             print("ban <username> <reason> - ban a user")
             print("shutdown - shutdown the server")
-        elif command == "help kick":
-            print("kick <username> <timeout> <reason> - kick a user")
-            print("timeout - 2d, 3h, 5m, etc.")
+        elif command.startswith("messages"):
+            try:
+                date = convert_to_date_minus(command.split(" ")[1])
+                print(f"Messages since {date}:")
+                for message in server.messages:
+                    if message.date >= date:
+                        print(message)
+            except IndexError:
+                print("Please specify a date")
         elif command == "users":
             print("Users:")
             for user in server.clients:
