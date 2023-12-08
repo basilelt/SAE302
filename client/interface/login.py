@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt, QPropertyAnimation, QSize, QSequentialAnimationGrou
 from PyQt6.QtGui import QPalette, QColor, QShowEvent, QKeyEvent
 import os
 from backend.client import Client
+from .chat import ChatWindow
 
 class LoginWindow(QMainWindow):
     """
@@ -340,13 +341,17 @@ class LoginWindow(QMainWindow):
             server = self.__server.text()
             port = int(self.__port.text())
             self.client = Client(username, password, server, port)
+            self.client.connected.connect(self.onClientConnected)
         except Exception as err:
             print(err)
 
-        if self.client.isconnected == True:
-            pass
-        
-        
+    def onClientConnected(self):
+        """
+        Handles the connected signal of the client.
+        """
+        self.chat_window = ChatWindow(self.client)
+        self.chat_window.show()
+        self.hide()
 
     def onQuitClicked(self):
         """

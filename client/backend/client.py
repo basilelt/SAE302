@@ -40,6 +40,8 @@ class Client():
                     message = json.loads(data)
                     print(message)
                     handle_message(self, message)
+                    if self.isconnected:
+                        self.connected.emit()
                 except json.JSONDecodeError:
                     logging.error("Failed to decode JSON")
             except(ConnectionResetError):

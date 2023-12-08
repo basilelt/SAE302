@@ -24,14 +24,14 @@ def handle_signin_message(client:'Client', message:dict):
     elif message['status'] == "ban":
         reason = message['reason']
     
-def handle_disconnect_message():
+def handle_disconnect_message(client:'Client', message:dict):
     pass
 
-def handle_pending_room_message():
+def handle_pending_room_message(client:'Client', message:dict):
     pass
 
-def handle_public_message():
+def handle_public_message(client:'Client', message:dict):
     pass
 
-def handle_private_message():
+def handle_private_message(client:'Client', message:dict):
     pass
