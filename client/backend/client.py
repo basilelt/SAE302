@@ -1,3 +1,4 @@
+from PyQt6.QtCore import pyqtSignal, QObject
 import socket
 import threading
 import json
@@ -7,8 +8,12 @@ from .handler import handle_message
 ## Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-class Client():
+class Client(QObject):
+    connected = pyqtSignal()
+
     def __init__(self, username:str, password:str, server:str, port:int, register:bool=False):
+        super().__init__()
+        
         self.username = username
         self.password = password
         self.server = server
