@@ -31,7 +31,9 @@ def handle_signup_message(message:dict, client:'Client', _:list, server:'Server'
         creation_date = datetime.datetime.now()
         try:
             server.database.execute_sql_query("INSERT INTO users (name, password, date_creation) VALUES (:name, :password, :date_creation)",
-                                              {'name':user, 'password':hashed_password, 'date_creation':creation_date})
+                                              {'name':user,
+                                               'password':hashed_password,
+                                               'date_creation':creation_date})
             client.login = True
             response = json.dumps({'type': 'signup',
                                    'status': 'ok'})
@@ -73,13 +75,13 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
             client.name = user
             client.state = server.database.fetch_user_state(user)
                      
-            result = server.database.fetch_all("SELECT name FROM rooms, users WHERE users.name = :name",
+            result = server.database.fetch_all("SELECT rooms.name FROM rooms, users WHERE users.name = :name",
                                                {'name':user})
-            client.rooms = result if result else None
+            client.rooms = [row[0] for row in result] if result else []
 
             result = server.database.fetch_all("SELECT pending_rooms FROM users WHERE users.name = :name",
                                                {'name':user})
-            client.pending_rooms = result if result else None
+            client.pending_rooms = [row[0] for row in result] if result else []
 
             if client.state == "valid":
                 ## Valid user
