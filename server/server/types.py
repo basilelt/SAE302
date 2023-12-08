@@ -92,11 +92,11 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
                 ## Kicked user
                 result = server.database.fetch_one("SELECT timeout FROM users WHERE name = :name",
                                                    {'name':user})
-                timeout = result[0][0] if result else None
+                timeout = result[0] if result else None
 
                 result = server.database.fetch_one("SELECT reason FROM users WHERE name = :name",
                                                    {'name':user})
-                reason = result[0][0] if result else None
+                reason = result[0] if result else None
 
                 response = json.dumps({'type': 'signin',
                                        'status': 'kick',
@@ -109,7 +109,7 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
                 ## Banned user
                 result = server.database.fetch_one("SELECT reason FROM users WHERE name = :name",
                                                    {'name':user})
-                reason = result[0][0] if result else None
+                reason = result[0] if result else None
 
                 response = json.dumps({'type': 'signin',
                                        'status': 'ban',

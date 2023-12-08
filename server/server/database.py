@@ -84,7 +84,7 @@ class DatabaseConnection:
         """Fetches the password of a user from the database."""
         result = self.fetch_one("SELECT password FROM users WHERE name = :user",
                                 {'user': user})
-        return result[0][0].encode('utf-8') if result else None
+        return result[0].encode('utf-8') if result else None
     
     def get_rooms(self):
         """Fetches all rooms from the database."""
