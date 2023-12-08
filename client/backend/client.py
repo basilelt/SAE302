@@ -20,7 +20,8 @@ class Client():
         self.__socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__socket_tcp.connect((self.server, self.port))
 
-        threading.Thread(target=self.listen, args=(self.__socket_tcp,)).start()
+        self.thread = threading.Thread(target=self.listen, args=(self.__socket_tcp,))
+        self.thread.start()
 
         if register:
             self.send_signup_info()
@@ -56,5 +57,11 @@ class Client():
                 'username': self.username,
                 'password': self.password}
         self.__socket_tcp.send(json.dumps(data).encode())
+    
+    def close(self):
+        self.listen_flag = True
+        self.__socket_tcp.send(json.dumps({'type': 'disconnect'}).encode())
+        self.thread.join()
+        self.__socket_tcp.close()
 
 

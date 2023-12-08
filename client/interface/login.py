@@ -55,6 +55,7 @@ class LoginWindow(QMainWindow):
         This method initializes the QMainWindow parent class, sets up some basic window properties, and calls the setup methods to initialize CSS, widgets, layout, and animations.
         """
         super().__init__()
+        self.client = None
 
         ## Initialize the QMainWindow parent class and set up some basic window properties
         self.animationGroup = None
@@ -338,11 +339,11 @@ class LoginWindow(QMainWindow):
             password = self.__password.text()
             server = self.__server.text()
             port = int(self.__port.text())
-            client = Client(username, password, server, port)
+            self.client = Client(username, password, server, port)
         except Exception as err:
             print(err)
 
-        if client.isconnected == True:
+        if self.client.isconnected == True:
             pass
         
         
@@ -351,6 +352,8 @@ class LoginWindow(QMainWindow):
         """
         Handles the click event of the quit button.
         """
+        if self.client != None:
+            self.client.close()
         QApplication.exit(0)
         
 

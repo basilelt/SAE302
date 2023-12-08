@@ -5,7 +5,7 @@ from interface.login import LoginWindow
 
 def main():
     ## Configure logging
-    logging.basicConfig(filename='server.log', level=logging.INFO)
+    logging.basicConfig(filename='client.log', level=logging.INFO)
 
     ## Create the client
     app = QApplication(sys.argv)

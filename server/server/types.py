@@ -138,8 +138,10 @@ def handle_disconnect_message(_1:dict, client:'Client', clients:list, _2:'Server
     """
     try:
         ## Close the client connection and remove it from the list of clients
-        client.close()
-        clients.remove(client)
+        response = json.dumps({'type': 'disconnect',
+                              'status': 'ok'})
+        client.send(response)
+        client.close(clients)
     except ValueError:
         ## Handle the case where the client is not in the list
         print(f"Failed to remove client {client.name} from the list.")
@@ -181,7 +183,7 @@ def handle_pending_room_message(message:dict, client:'Client', _:list, server:'S
                                    'reason': 'already_in_room'})
 
         ## Send response
-        client.send(response.encode())
+        client.send(response)
     else:
         ## If client is not logged in, send an error response
         response = json.dumps({'type': 'pending_room',
