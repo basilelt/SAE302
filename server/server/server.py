@@ -110,7 +110,7 @@ class Server:
 
         ## Close all client connections
         for client in self.clients:
-            client.close()
+            client.close(self.clients)
 
         time.sleep(0.5)
 
@@ -133,6 +133,17 @@ class Server:
 
     ############################################################################################################
         
+    def addroom(self, room:str):
+        """
+        Add a room to the server.
+
+        Args:
+            room (str): The room.
+        """
+        self.database.execute_sql_query("INSERT INTO rooms (name) VALUES (:room)",
+                                        {'room': room})
+        self.rooms.append(room)
+    
     def kick_user(self, username:str, timeout:'datetime', reason:str):
         """
         Kick a user from the server.
@@ -144,9 +155,11 @@ class Server:
         """
         for client in self.clients:
             if client.name == username:
-                self.database.execute_sql_query("UPDATE users SET state = 'kick', reason = %s, timeout = %s WHERE name = %s",
-                                                (reason, timeout, username))
-                
+                self.database.execute_sql_query("UPDATE users SET state = :kick, reason = :reason, timeout = :timeout WHERE name = :username",
+                                                {'kick':"kick",
+                                                'reason':reason,
+                                                'timeout':timeout,
+                                                'username':username})
                 client.state = 'kick'
                 client.send({'type': 'kick',
                              'timeout': timeout.strftime("%Y-%m-%d %H:%M:%S"),
@@ -162,9 +175,11 @@ class Server:
         """
         for client in self.clients:
             if client.name == username:
-                self.database.execute_sql_query("UPDATE users SET state = 'valid', reason = NULL, timeout = NULL WHERE name = %s",
-                                                (username,))
-                
+                self.database.execute("UPDATE users SET state = :state, reason = :reason, timeout = :timeout WHERE name = :username",
+                                      {'state': 'valid',
+                                      'reason': None,
+                                      'timeout': None,
+                                      'username': username})
                 client.state = 'valid'
                 client.send({'type': 'unkick'})
                 break
@@ -179,9 +194,10 @@ class Server:
         """
         for client in self.clients:
             if client.name == username:
-                self.database.execute_sql_query("UPDATE users SET state = 'ban', reason = %s WHERE name = %s",
-                                                (reason, username))
-                
+                self.database.execute("UPDATE users SET state = :state, reason = :reason WHERE name = :username",
+                                      {'state': 'ban',
+                                      'reason': reason,
+                                      'username': username})
                 client.state = 'ban'
                 client.send({'type': 'ban',
                              'reason': reason})
@@ -196,9 +212,10 @@ class Server:
         """
         for client in self.clients:
             if client.name == username:
-                self.database.execute_sql_query("UPDATE users SET state = 'valid', reason = NULL WHERE name = %s",
-                                                (username,))
-                
+                self.database.execute("UPDATE users SET state = :state, reason = :reason WHERE name = :username",
+                                      {'state': 'valid',
+                                      'reason': None,
+                                      'username': username})
                 client.state = 'valid'
                 client.send({'type': 'unban'})
                 break

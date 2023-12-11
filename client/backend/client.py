@@ -41,14 +41,16 @@ class Client(QObject):
         while not self.listen_flag:
             try:
                 data = socket.recv(1024).decode()
-                try:
-                    message = json.loads(data)
-                    print(message)
-                    handle_message(self, message)
-                    if self.isconnected:
-                        self.connected.emit()
-                except json.JSONDecodeError:
-                    logging.error("Failed to decode JSON")
+                ## Check if data is not empty, prevents errors when server closes
+                if data: 
+                    try:
+                        message = json.loads(data)
+                        print(message)
+                        handle_message(self, message)
+                        if self.isconnected:
+                            self.connected.emit()
+                    except json.JSONDecodeError:
+                        logging.error("Failed to decode JSON")
             except(ConnectionResetError):
                 logging.error("Connection reset")
             except(BrokenPipeError):

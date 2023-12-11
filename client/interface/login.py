@@ -107,7 +107,7 @@ class LoginWindow(QMainWindow):
         """
         ## Create line edits for user, password, server, and port
         self.__user = self.createLineEdit()
-        self.__password = self.createLineEdit()
+        self.__password = self.createPasswordLineEdit()
         self.__server = self.createLineEdit()
         self.__port = self.createLineEdit()
 
@@ -141,6 +141,16 @@ class LoginWindow(QMainWindow):
         ## Set the style of the QLineEdit
         lineEdit.setStyleSheet(f"background-color: {darker_color.darker(110).name()}; border: none")
         return lineEdit
+    
+    def createPasswordLineEdit(self):
+        """
+        Creates a QLineEdit widget with a specific style for password input.
+
+        This method creates a QLineEdit widget, sets its background color and border style, and sets its echo mode to Password.
+        """
+        line_edit = self.createLineEdit()
+        line_edit.setEchoMode(QLineEdit.EchoMode.Password)
+        return line_edit
 
     def createGroup(self, labelText:str, lineEdit:QLineEdit) -> QGroupBox:
         """

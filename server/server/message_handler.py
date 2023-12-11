@@ -20,12 +20,14 @@ def handler(client:'Client', clients:list, server:'Server'):
     while not server.stop_clients:
         try:
             data = client.receive()
-            try:
-                message = json.loads(data)
-                print(message)
-                handle_message(message, client, clients, server)
-            except json.JSONDecodeError:
-                logging.error("Failed to decode JSON")
+            ## Check if data is not empty, prevents errors when client closes
+            if data:
+                try:
+                    message = json.loads(data)
+                    print(message)
+                    handle_message(message, client, clients, server)
+                except json.JSONDecodeError:
+                    logging.error("Failed to decode JSON")
         except(ConnectionResetError):
             logging.error("Connection reset")
         except(BrokenPipeError):

@@ -80,11 +80,15 @@ def admin_cmd(server:'Server'):
             print("messages <time> - display a list of all messages since a time")
             print("users - display a list of all users")
             print("rooms - display a list of all rooms")
+            print("add room <room1,room2,...> - add a room")
             print("pending rooms <username> - display a list of pending rooms for a user")
             print("accept pending <username> <room1,room2,...> - accept pending rooms for a user")
             print("kick <username> <timeout> <reason> - kick a user")
+            print("unkick <username> - unkick a user")
             print("ban <username> <reason> - ban a user")
+            print("unban <username> - unban a user")
             print("shutdown - shutdown the server")
+
         elif command.startswith("messages"):
             try:
                 date = convert_to_date_minus(command.split(" ")[1])
@@ -102,6 +106,13 @@ def admin_cmd(server:'Server'):
             print("Rooms:")
             for room in server.rooms:
                 print(room)
+        elif command.startswith("add room"):
+            try:
+                rooms = command.split(" ")[2]
+                for room in rooms.split(","):
+                    server.addroom(room)
+            except IndexError:
+                print("Please specify a room")
         elif command.startswith("pending rooms"):
             try:
                 username = command.split(" ")[2]

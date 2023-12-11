@@ -75,8 +75,8 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
             client.name = user
             client.state = server.database.fetch_user_state(user)
                      
-            result = server.database.fetch_all("SELECT rooms.name FROM rooms, users WHERE users.name = :name",
-                                               {'name':user})
+            result = server.database.fetch_all("SELECT room FROM belong WHERE user = :name",
+                                               {'name': user})
             client.rooms = [row[0] for row in result] if result else []
 
             result = server.database.fetch_all("SELECT pending_rooms FROM users WHERE users.name = :name",
