@@ -109,7 +109,9 @@ class LoginWindow(QMainWindow):
         self.__user = self.createLineEdit()
         self.__password = self.createPasswordLineEdit()
         self.__server = self.createLineEdit()
+        self.__server.setText("localhost")
         self.__port = self.createLineEdit()
+        self.__port.setText("5000")
 
         ## Create buttons for connect, quit, and register
         self.connect = QPushButton("Connect")

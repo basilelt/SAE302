@@ -96,6 +96,8 @@ class Client:
         """
         Close the client's connection.
         """
+        logging.info("Closing client")
+        
         self.conn.close()
         clients.remove(self)
         

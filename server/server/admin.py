@@ -225,6 +225,12 @@ def admin_cmd(server:'Server'):
 
         ########################################################################################################
         
+        elif command.startswith("kill"):
+            user = command.split(" ")[1]
+            reason = command.split(" ")[2:]
+            server.kill(user, reason)
+            print(f"Killed {user}")
+
         elif command == "shutdown":
             print("Server is shutting down...")
             server.close()

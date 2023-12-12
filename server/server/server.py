@@ -293,4 +293,18 @@ class Server:
                 client.state = 'valid'
                 client.send({'type': 'unban'})
                 break
+    
+    def kill(self, user:str, reason:str):
+        """
+        Kill a user from the server.
+
+        Args:
+            user (str): The username.
+            reason (str): The reason for killing the user.
+        """
+        for client in self.clients:
+            if client.name == user:
+                client.send({'type': 'kill',
+                             'reason': reason})
+                break
             

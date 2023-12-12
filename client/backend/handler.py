@@ -17,7 +17,7 @@ def handle_message(client:'Client', message:dict):
     message_handlers = {
         'signup': handle_signup_message,
         'signin': handle_signin_message,
-        'disconnect': handle_disconnect_message,
+        'kill': handle_kill_message,
         'pending_room': handle_pending_room_message,
         'public': handle_public_message,
         'private': handle_private_message
