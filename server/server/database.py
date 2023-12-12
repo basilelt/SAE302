@@ -97,13 +97,12 @@ class DatabaseConnection:
                                 {'room': room})
         return len(result) > 0 if result else False
 
-    def insert_message(self, user, room, date_message, ip, body):
+    def insert_message(self, user, room, date_message, body):
         """Inserts a message into the database."""
-        self.execute_sql_query("INSERT INTO messages (user, room, date_message, ip, body) VALUES (:user, :room, :date_message, :ip, :body)",
+        self.execute_sql_query("INSERT INTO messages (user, room, date_message, body) VALUES (:user, :room, :date_message, :body)",
                                {'user': user,
                                 'room': room,
                                 'date_message': date_message,
-                                'ip': ip,
                                 'body': body})
         
     def close(self):

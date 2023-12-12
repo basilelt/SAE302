@@ -77,16 +77,23 @@ def admin_cmd(server:'Server'):
         if command == "help":
             print("Available commands:")
             print("help - display this help message")
+            print("")
             print("messages <time> - display a list of all messages since a time")
             print("users - display a list of all users")
+            print("")
             print("rooms - display a list of all rooms")
             print("add room <room1,room2,...> - add a room")
             print("pending rooms <username> - display a list of pending rooms for a user")
             print("accept pending <username> <room1,room2,...> - accept pending rooms for a user")
+            print("")
             print("kick <username> <timeout> <reason> - kick a user")
             print("unkick <username> - unkick a user")
+            print("")
             print("ban <username> <reason> - ban a user")
+            print("ban ip <ip> <reason> - ban an IP address")
             print("unban <username> - unban a user")
+            print("unban ip <ip> - unban an IP address")
+            print("")
             print("shutdown - shutdown the server")
 
         elif command.startswith("messages"):
@@ -144,32 +151,65 @@ def admin_cmd(server:'Server'):
                 print("Please specify a username and a room")
 
         elif command.startswith("kick"):
-            try:
-                username = command.split(" ")[1]
-                timeout = convert_to_date(command.split(" ")[2])
-                reason = " ".join(command.split(" ")[3:])
-                server.kick_user(username, timeout, reason)
-            except IndexError:
-                print("Please specify a username")
+            if command.split(" ")[1] == "ip":
+                try:
+                    ip = command.split(" ")[2]
+                    timeout = convert_to_date(command.split(" ")[3])
+                    reason = " ".join(command.split(" ")[4:])
+                    server.kick_ip(ip, timeout, reason)
+                except IndexError:
+                    print("Please specify an IP address")
+            else:
+                try:
+                    username = command.split(" ")[1]
+                    timeout = convert_to_date(command.split(" ")[2])
+                    reason = " ".join(command.split(" ")[3:])
+                    server.kick_user(username, timeout, reason)
+                except IndexError:
+                    print("Please specify a username")
         elif command.startswith("unkick"):
-            try:
-                username = command.split(" ")[1]
-                server.unkick_user(username)
-            except IndexError:
-                print("Please specify a username")
+            if command.split(" ")[1] == "ip":
+                try:
+                    ip = command.split(" ")[2]
+                    server.unkick_ip(ip)
+                except IndexError:
+                    print("Please specify an IP address")
+            else:
+                try:
+                    username = command.split(" ")[1]
+                    server.unkick_user(username)
+                except IndexError:
+                    print("Please specify a username")
+        
         elif command.startswith("ban"):
-            try:
-                username = command.split(" ")[1]
-                reason = " ".join(command.split(" ")[2:])
-                server.ban_user(username, reason)
-            except IndexError:
-                print("Please specify a username")
+            if command.split(" ")[1] == "ip":
+                try:
+                    ip = command.split(" ")[2]
+                    reason = " ".join(command.split(" ")[3:])
+                    server.ban_ip(ip, reason) ######
+                except IndexError:
+                    print("Please specify an IP address")
+            else:
+                try:
+                    username = command.split(" ")[1]
+                    reason = " ".join(command.split(" ")[2:])
+                    server.ban_user(username, reason)
+                except IndexError:
+                    print("Please specify a username")
         elif command.startswith("unban"):
-            try:
-                username = command.split(" ")[1]
-                server.unban_user(username)
-            except IndexError:
-                print("Please specify a username")
+            if command.split(" ")[1] == "ip":
+                try:
+                    ip = command.split(" ")[2]
+                    server.unban_ip(ip) ######
+                except IndexError:
+                    print("Please specify an IP address")
+            else:
+                try:
+                    username = command.split(" ")[1]
+                    server.unban_user(username)
+                except IndexError:
+                    print("Please specify a username")
+        
         elif command == "shutdown":
             print("Server is shutting down...")
             server.close()

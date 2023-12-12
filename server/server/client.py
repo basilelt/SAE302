@@ -25,7 +25,7 @@ class Client:
 
         Args:
             conn (socket.socket): The client's socket connection.
-            address (str): The client's address.
+            address (str): The client's ip address.
             host (str): The host address.
             port (int): The port number.
             clients (list): The list of clients.
@@ -34,7 +34,7 @@ class Client:
 
         logging.info("Initializing client")
         self.conn = conn
-        self.address = address
+        self.ip = address
         self.name = ""
         self.state = None
         self.pending_rooms = []

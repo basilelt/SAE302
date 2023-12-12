@@ -8,9 +8,10 @@ CREATE TABLE `users` (
   `name` VARCHAR(40) UNIQUE PRIMARY KEY NOT NULL,
   `password` VARCHAR(60) NOT NULL,
   `pending_rooms` VARCHAR(2000),
-  `state` VARCHAR(5) NOT NULL DEFAULT "valid",
+  `state` VARCHAR(8) NOT NULL DEFAULT "valid",
   `reason` VARCHAR(2000),
   `timeout` TIMESTAMP,
+  `ip` VARCHAR(39),
   `date_creation` TIMESTAMP NOT NULL
 );
 
@@ -24,7 +25,6 @@ CREATE TABLE `messages` (
   `user` VARCHAR(40),
   `room` VARCHAR(60),
   `date_message` TIMESTAMP,
-  `ip` VARCHAR(39),
   `body` TEXT(2000) COMMENT 'Contentenu du message',
   FOREIGN KEY (`user`) REFERENCES `users` (`name`),
   FOREIGN KEY (`room`) REFERENCES `rooms` (`name`)

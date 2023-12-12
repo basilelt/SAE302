@@ -53,7 +53,7 @@ class ChatWindow(QMainWindow):
         label = QLabel()
         label.setPixmap(pixmap)
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        label.setText(room[:2].upper())
+        label.setText(room)
 
         self.list_widget.addItem(item)
         self.list_widget.setItemWidget(item, label)
@@ -70,7 +70,7 @@ class ChatWindow(QMainWindow):
                 self.layout.removeWidget(widget)
                 widget.setParent(None)
 
-            if title == "HO":  # If the selected room is "home"
+            if title == "HO":
                 title = QLabel("Choose the rooms you want to join")
                 self.layout.addWidget(title, 1, 1)
 

@@ -166,6 +166,45 @@ class Server:
                              'reason': reason})
                 break
     
+    def kick_ip(self, ip:str, timeout:'datetime', reason:str):
+        """
+        Kick an IP address from the server.
+
+        Args:
+            ip (str): The IP address.
+            timeout ('datetime'): Date and time when the ip can join the server again.
+            reason (str): The reason for kicking the ip.
+        """
+        for client in self.clients:
+            if client.ip == ip:
+                self.database.execute("UPDATE users SET state = :kick, reason = :reason, timeout = :timeout WHERE ip = :ip",
+                                      {'kick':"kick_ip",
+                                      'reason':ip + ":" + reason,
+                                      'timeout':timeout,
+                                      'ip':ip})
+                client.state = 'kick_ip'
+                client.send({'type': 'kick_ip',
+                             'timeout': timeout.strftime("%Y-%m-%d %H:%M:%S"),
+                             'reason': reason})
+                
+    def unkick_ip(self, ip:str):
+        """
+        Unkick an IP address from the server.
+
+        Args:
+            ip (str): The IP address.
+        """
+        for client in self.clients:
+            result = self.database.fetch_user_state(client.name)
+            if result == "kick_ip":
+                if client.reason.split(":")[0] == ip:
+                    self.database.execute("UPDATE users SET state = :state, reason = :reason, timeout = :timeout",
+                                          {'state': 'valid',
+                                          'reason': None,
+                                          'timeout': None})
+                    client.state = 'valid'
+                    client.send({'type': 'unkick_ip'})
+    
     def unkick_user(self, username:str):
         """
         Unkick a user from the server.
@@ -202,6 +241,41 @@ class Server:
                 client.send({'type': 'ban',
                              'reason': reason})
                 break
+
+    def ban_ip(self, ip:str, reason:str):
+        """
+        Ban an IP address from the server.
+
+        Args:
+            ip (str): The IP address.
+            reason (str): The reason for banning the ip.
+        """
+        for client in self.clients:
+            if client.ip == ip:
+                self.database.execute("UPDATE users SET state = :state, reason = :reason WHERE ip = :ip",
+                                      {'state': 'ban_ip',
+                                      'reason': ip + ":" + reason,
+                                      'ip': ip})
+                client.state = 'ban_ip'
+                client.send({'type': 'ban_ip',
+                             'reason': reason})
+                
+    def unban_ip(self, ip:str):
+        """
+        Unban an IP address from the server.
+
+        Args:
+            ip (str): The IP address.
+        """
+        for client in self.clients:
+            result = self.database.fetch_user_state(client.name)
+            if result == "ban_ip":
+                if client.reason.split(":")[0] == ip:
+                    self.database.execute("UPDATE users SET state = :state, reason = :reason",
+                                          {'state': 'valid',
+                                          'reason': None})
+                    client.state = 'valid'
+                    client.send({'type': 'unban_ip'})
     
     def unban_user(self, username:str):
         """

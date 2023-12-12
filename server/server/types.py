@@ -30,11 +30,14 @@ def handle_signup_message(message:dict, client:'Client', _:list, server:'Server'
 
         creation_date = datetime.datetime.now()
         try:
-            server.database.execute_sql_query("INSERT INTO users (name, password, date_creation) VALUES (:name, :password, :date_creation)",
+            server.database.execute_sql_query("INSERT INTO users (name, password, ip, date_creation) VALUES (:name, :password, :ip, :date_creation)",
                                               {'name':user,
                                                'password':hashed_password,
+                                               'ip':client.ip,
                                                'date_creation':creation_date})
             client.login = True
+            client.state = "valid"
+            server.database.execute_sql_query()
             response = json.dumps({'type': 'signup',
                                    'status': 'ok'})
         except Exception as e:
@@ -216,12 +219,11 @@ def handle_public_message(message:dict, clients:list, client:'Client', server:'S
         else:
             ## If valid, extract message details and insert into the database
             message_text = message['message']
-            ip = client.addr
             date_message = datetime.datetime.now()
             room = client.rooms
 
             try:
-                server.database.insert_message(client.name, room, date_message, ip, message_text)
+                server.database.insert_message(client.name, room, date_message, message_text)
                 response = json.dumps({'type': 'public',
                                        'room': room,
                                        'user': client.name,
@@ -274,7 +276,6 @@ def handle_private_message(message:dict, clients:list, client:'Client', server:'
             else:
                 ## Extract message details
                 message_text = message['message']
-                ip = client.address
                 date_message = datetime.datetime.now()
                 room = ''.join(sorted([client.name, to_user.name]))
 
@@ -295,7 +296,7 @@ def handle_private_message(message:dict, clients:list, client:'Client', server:'
                 ## If recipient is valid, send the message
                 if to_user.state == "valid":
                     try:
-                        server.database.insert_message(client.name, room, date_message, ip, message_text)
+                        server.database.insert_message(client.name, room, date_message, message_text)
                         response = json.dumps({'type': 'private',
                                                'room': room,
                                                'user': client.name,
