@@ -96,6 +96,8 @@ def admin_cmd(server:'Server'):
             print("")
             print("shutdown - shutdown the server")
 
+        ########################################################################################################
+
         elif command.startswith("messages"):
             try:
                 date = convert_to_date_minus(command.split(" ")[1])
@@ -105,14 +107,17 @@ def admin_cmd(server:'Server'):
                         print(message)
             except IndexError:
                 print("Please specify a date")
+        
         elif command == "users":
             print("Users:")
             for user in server.clients:
-                print(user.name)
+                print(user.name + " " + user.ip)
+        
         elif command == "rooms":    
             print("Rooms:")
             for room in server.rooms:
                 print(room)
+        
         elif command.startswith("add room"):
             try:
                 rooms = command.split(" ")[2]
@@ -120,6 +125,7 @@ def admin_cmd(server:'Server'):
                     server.addroom(room)
             except IndexError:
                 print("Please specify a room")
+        
         elif command.startswith("pending rooms"):
             try:
                 username = command.split(" ")[2]
@@ -131,6 +137,7 @@ def admin_cmd(server:'Server'):
                         break
             except IndexError:
                 print("Please specify a username")
+        
         elif command.startswith("accept pending"):
             try:
                 username = command.split(" ")[2]
@@ -150,6 +157,8 @@ def admin_cmd(server:'Server'):
             except IndexError:
                 print("Please specify a username and a room")
 
+        ########################################################################################################
+
         elif command.startswith("kick"):
             if command.split(" ")[1] == "ip":
                 try:
@@ -167,6 +176,7 @@ def admin_cmd(server:'Server'):
                     server.kick_user(username, timeout, reason)
                 except IndexError:
                     print("Please specify a username")
+        
         elif command.startswith("unkick"):
             if command.split(" ")[1] == "ip":
                 try:
@@ -180,13 +190,15 @@ def admin_cmd(server:'Server'):
                     server.unkick_user(username)
                 except IndexError:
                     print("Please specify a username")
+
+        ########################################################################################################
         
         elif command.startswith("ban"):
             if command.split(" ")[1] == "ip":
                 try:
                     ip = command.split(" ")[2]
                     reason = " ".join(command.split(" ")[3:])
-                    server.ban_ip(ip, reason) ######
+                    server.ban_ip(ip, reason)
                 except IndexError:
                     print("Please specify an IP address")
             else:
@@ -196,11 +208,12 @@ def admin_cmd(server:'Server'):
                     server.ban_user(username, reason)
                 except IndexError:
                     print("Please specify a username")
+        
         elif command.startswith("unban"):
             if command.split(" ")[1] == "ip":
                 try:
                     ip = command.split(" ")[2]
-                    server.unban_ip(ip) ######
+                    server.unban_ip(ip)
                 except IndexError:
                     print("Please specify an IP address")
             else:
@@ -209,6 +222,8 @@ def admin_cmd(server:'Server'):
                     server.unban_user(username)
                 except IndexError:
                     print("Please specify a username")
+
+        ########################################################################################################
         
         elif command == "shutdown":
             print("Server is shutting down...")

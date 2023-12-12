@@ -77,6 +77,9 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
         else:
             client.name = user
             client.state = server.database.fetch_user_state(user)
+            server.database.execute_sql_query("UPDATE users SET ip = :ip WHERE name = :name",
+                                              {'ip':client.ip,
+                                               'name':user})
                      
             result = server.database.fetch_all("SELECT room FROM belong WHERE user = :name",
                                                {'name': user})
@@ -95,11 +98,23 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
                 client.login = True
                 client.send(response)
                                   
-            elif client.state == "kick":
+            elif client.state == "kick" or client.state == "kick_ip":
                 ## Kicked user
                 result = server.database.fetch_one("SELECT timeout FROM users WHERE name = :name",
                                                    {'name':user})
                 timeout = result[0] if result else None
+                
+                if datetime.datetime.now() > timeout:
+                    ## If timeout has expired, unkick the user
+                    server.database.execute_sql_query("UPDATE users SET state = 'valid' WHERE name = :name",
+                                                      {'name':user})
+                    client.state = "valid"
+                    response = json.dumps({'type': 'signin',
+                                           'status': 'ok',
+                                           'all_rooms': server.database.get_rooms(),
+                                           'rooms': client.rooms,})
+                    client.login = True
+                    client.send(response)
 
                 result = server.database.fetch_one("SELECT reason FROM users WHERE name = :name",
                                                    {'name':user})
@@ -112,7 +127,7 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
                 client.send(response)
                 client.close(clients)
                                      
-            elif client.state == "ban":
+            elif client.state == "ban" or client.state == "ban_ip":
                 ## Banned user
                 result = server.database.fetch_one("SELECT reason FROM users WHERE name = :name",
                                                    {'name':user})
