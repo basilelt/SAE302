@@ -10,6 +10,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 class Client(QObject):
     connected = pyqtSignal()
+    error_received = pyqtSignal(str)
 
     def __init__(self, username:str, password:str, server:str, port:int, register:bool=False):
         super().__init__()
@@ -20,7 +21,6 @@ class Client(QObject):
         self.port = port
 
         self.listen_flag = False
-        self.isconnected = False
 
         self.all_rooms = []
         self.rooms = []
@@ -47,8 +47,6 @@ class Client(QObject):
                         message = json.loads(data)
                         print(message)
                         handle_message(self, message)
-                        if self.isconnected:
-                            self.connected.emit()
                     except json.JSONDecodeError:
                         logging.error("Failed to decode JSON")
             except(ConnectionResetError):

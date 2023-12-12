@@ -31,7 +31,7 @@ class DatabaseConnection:
         Fetches the password of a user from the database.
     room_exists(room):
         Checks if a room exists in the database.
-    insert_message(user, room, date_message, ip, body):
+    insert_message(user, room, date_message, body):
         Inserts a message into the database.
     """
 

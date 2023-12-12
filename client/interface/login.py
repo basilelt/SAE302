@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QMainWindow, QPushButton, QLineEdit, QLabel, QGridLayout, QFrame, QGroupBox, QVBoxLayout, QGraphicsDropShadowEffect, QApplication
+from PyQt6.QtWidgets import QWidget, QMainWindow, QPushButton, QLineEdit, QLabel, QGridLayout, QFrame, QGroupBox, QVBoxLayout, QGraphicsDropShadowEffect, QApplication, QMessageBox
 from PyQt6.QtCore import Qt, QPropertyAnimation, QSize, QSequentialAnimationGroup
 from PyQt6.QtGui import QPalette, QColor, QShowEvent, QKeyEvent
 import os
@@ -354,6 +354,7 @@ class LoginWindow(QMainWindow):
             port = int(self.__port.text())
             self.client = Client(username, password, server, port)
             self.client.connected.connect(self.onClientConnected)
+            self.client.error_received.connect(self.showErrorPopup)
         except Exception as err:
             print(err)
 
@@ -376,17 +377,17 @@ class LoginWindow(QMainWindow):
 
     def onRegisterClicked(self):
         """
-        Handles the click event of the connect button.
+        Handles the click event of the register button.
         """
         try:
             username = self.__user.text()
             password = self.__password.text()
             server = self.__server.text()
             port = int(self.__port.text())
-            client = Client(username, password, server, port, register=True)
+            self.client = Client(username, password, server, port, register=True)
+            self.client.error_received.connect(self.showErrorPopup)
         except Exception as err:
-            print(err)
+            print(err)        
 
-        if client.isconnected == True:
-            pass
-        
+    def showErrorPopup(self, error, error_message):
+        QMessageBox.information(self, "Can't sign in/up", error, error_message)

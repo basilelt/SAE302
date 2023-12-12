@@ -176,7 +176,7 @@ class Server:
             reason (str): The reason for kicking the ip.
         """
         for client in self.clients:
-            if client.ip == ip:
+            if client.ip[0] == ip:
                 self.database.execute("UPDATE users SET state = :kick, reason = :reason, timeout = :timeout WHERE ip = :ip",
                                       {'kick':"kick_ip",
                                       'reason':ip + ":" + reason,
@@ -251,11 +251,10 @@ class Server:
             reason (str): The reason for banning the ip.
         """
         for client in self.clients:
-            if client.ip == ip:
+            if client.ip[0] == ip:
                 self.database.execute("UPDATE users SET state = :state, reason = :reason WHERE ip = :ip",
                                       {'state': 'ban_ip',
-                                      'reason': ip + ":" + reason,
-                                      'ip': ip})
+                                      'reason': ip + ":" + reason})
                 client.state = 'ban_ip'
                 client.send({'type': 'ban_ip',
                              'reason': reason})

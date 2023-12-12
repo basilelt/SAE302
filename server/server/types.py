@@ -33,7 +33,7 @@ def handle_signup_message(message:dict, client:'Client', _:list, server:'Server'
             server.database.execute_sql_query("INSERT INTO users (name, password, ip, date_creation) VALUES (:name, :password, :ip, :date_creation)",
                                               {'name':user,
                                                'password':hashed_password,
-                                               'ip':client.ip,
+                                               'ip':client.ip[0],
                                                'date_creation':creation_date})
             client.login = True
             client.state = "valid"
@@ -78,7 +78,7 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
             client.name = user
             client.state = server.database.fetch_user_state(user)
             server.database.execute_sql_query("UPDATE users SET ip = :ip WHERE name = :name",
-                                              {'ip':client.ip,
+                                              {'ip':client.ip[0],
                                                'name':user})
                      
             result = server.database.fetch_all("SELECT room FROM belong WHERE user = :name",

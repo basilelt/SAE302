@@ -112,8 +112,10 @@ class Client:
             room (str): The room to add.
         """
         self.pending_rooms.remove(room)
-        server.database.execute_sql_query("UPDATE users SET pending_rooms = %s WHERE name = %s",
-                                          (','.join(self.pending_rooms), self.name))
+        server.database.execute_sql_query("UPDATE users SET pending_rooms = :pending_rooms WHERE name = :name",
+                                          {'pending_rooms': ','.join(self.pending_rooms),
+                                           'name': self.name})
         self.rooms.append(room)
-        server.database.execute_sql_query("UPDATE users SET rooms = %s WHERE name = %s",
-                                          (','.join(self.rooms), self.name))
+        server.database.execute_sql_query("UPDATE users SET rooms = :rooms WHERE name = :name",
+                                          {'rooms':','.join(self.rooms),
+                                           'name':self.name})
