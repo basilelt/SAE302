@@ -10,7 +10,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 class Client(QObject):
     connected = pyqtSignal()
-    error_received = pyqtSignal(str)
+    error_received = pyqtSignal(str, str)
+    room_added = pyqtSignal()
 
     def __init__(self, username:str, password:str, server:str, port:int, register:bool=False):
         super().__init__()
@@ -55,6 +56,11 @@ class Client(QObject):
                 logging.error("Connection broken")
             except Exception as e:
                 logging.error(f"Unexpected error: {e}")
+    
+    def send_pending_room(self, room:str):
+        data = {'type': 'pending_room',
+                'room': room}
+        self.__socket_tcp.send(json.dumps(data).encode())
 
     def send_signup_info(self):
         data = {'type': 'signup',

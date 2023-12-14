@@ -143,6 +143,7 @@ def admin_cmd(server:'Server'):
                 username = command.split(" ")[2]
                 rooms = command.split(" ")[3]
                 if rooms == "all":
+                    ## some empty thingy to fix
                     for client in server.clients:
                         if client.name == username:
                             for room in client.pending_rooms:

@@ -1,5 +1,6 @@
 import threading
 import logging
+import json
 from .message_handler import handler
 
 ## Import the types for documentation purposes
@@ -116,6 +117,10 @@ class Client:
                                           {'pending_rooms': ','.join(self.pending_rooms),
                                            'name': self.name})
         self.rooms.append(room)
-        server.database.execute_sql_query("UPDATE users SET rooms = :rooms WHERE name = :name",
-                                          {'rooms':','.join(self.rooms),
-                                           'name':self.name})
+        server.database.execute_sql_query("INSERT INTO belong (user, room) VALUES (:user, :room)",
+                                          {'user': self.name,
+                                           'room': room})
+        
+        self.send(json.dumps({'type': 'pending_room',
+                   'status': 'ok',
+                   'room': room}))

@@ -58,6 +58,15 @@ class ChatWindow(QMainWindow):
         self.list_widget.addItem(item)
         self.list_widget.setItemWidget(item, label)
 
+    def send_rooms(self):
+        selected_rooms = []
+        for i in range(self.layout.count()):
+            widget = self.layout.itemAt(i).widget()
+            if isinstance(widget, QCheckBox) and widget.isChecked():
+                selected_rooms.append(widget.text())
+        for room in selected_rooms:
+            self.client.send_pending_room(room)
+    
     def update_title(self, item):
         label = self.list_widget.itemWidget(item)
         if label is not None:
@@ -70,7 +79,7 @@ class ChatWindow(QMainWindow):
                 self.layout.removeWidget(widget)
                 widget.setParent(None)
 
-            if title == "HO":
+            if title == "home":
                 title = QLabel("Choose the rooms you want to join")
                 self.layout.addWidget(title, 1, 1)
 
@@ -86,9 +95,20 @@ class ChatWindow(QMainWindow):
                 self.layout.setRowStretch(0, 1)
                 self.layout.setRowStretch(len(self.client.all_rooms) + 3, 1)
 
+                self.send_button = QPushButton("Send")
+                self.send_button.clicked.connect(self.send_rooms)  # Connect the signal
+                self.layout.addWidget(self.send_button, len(self.client.all_rooms) + 2, 1)
+
             else:  # For other rooms
                 # Add your widgets for other rooms here
                 pass
         else:
             print("No widget set for item")
+
+    def refresh_rooms(self):
+        self.list_widget.clear()
+
+        self.add_room("home")
+        for room in self.client.rooms:
+            self.add_room(room)
             

@@ -31,11 +31,25 @@ def handle_signin_message(client:'Client', message:dict):
         client.error_received.emit(error, reason)
     
 def handle_kill_message(client:'Client', message:dict):
-    
+    client.close()
+    pass
+
+def handle_kick_message(client:'Client', message:dict):
+    error = "You are kicked"
+    timeout = message['timeout']
+    reason = message['reason']
+    client.error_received.emit(error, reason + "\n" + timeout)
+
+def handle_ban_message(client:'Client', message:dict):
+    error = "You are banned"
+    reason = message['reason']
+    client.error_received.emit(error, reason)
     pass
 
 def handle_pending_room_message(client:'Client', message:dict):
-    pass
+    room = message['room']
+    client.rooms.append(room)
+    client.room_added.emit()  # Emit the signal
 
 def handle_public_message(client:'Client', message:dict):
     pass

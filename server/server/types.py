@@ -87,8 +87,9 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
 
             result = server.database.fetch_all("SELECT pending_rooms FROM users WHERE users.name = :name",
                                                {'name':user})
-            client.pending_rooms = [row[0] for row in result] if result else []
-
+            list_result = result[0][0].split(',') if result[0][0] is not None else []
+            client.pending_rooms = list_result
+             
             if client.state == "valid":
                 ## Valid user
                 response = json.dumps({'type': 'signin',
@@ -188,7 +189,7 @@ def handle_pending_room_message(message:dict, client:'Client', _:list, server:'S
             response = json.dumps({'type': 'pending_room',
                                    'status': 'error',
                                    'reason': 'room_does_not_exist'})
-        elif room not in client.rooms:
+        elif room not in client.rooms and room is not None:
             client.pending_rooms.append(room)
             server.database.execute_sql_query("UPDATE users SET pending_rooms = :pending_rooms WHERE name = :name",
                                               {'pending_rooms':','.join(client.pending_rooms),

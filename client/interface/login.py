@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QWidget, QMainWindow, QPushButton, QLineEdit, QLabel, QGridLayout, QFrame, QGroupBox, QVBoxLayout, QGraphicsDropShadowEffect, QApplication, QMessageBox
+from PyQt6.QtWidgets import QWidget, QMainWindow, QPushButton, QLineEdit, QLabel, QGridLayout, QFrame, QGroupBox, QVBoxLayout, QGraphicsDropShadowEffect, QApplication, QDialog
 from PyQt6.QtCore import Qt, QPropertyAnimation, QSize, QSequentialAnimationGroup
-from PyQt6.QtGui import QPalette, QColor, QShowEvent, QKeyEvent
+from PyQt6.QtGui import QPalette, QColor, QShowEvent, QKeyEvent, QMovie
 import os
 from backend.client import Client
 from .chat import ChatWindow
@@ -366,6 +366,8 @@ class LoginWindow(QMainWindow):
         self.chat_window.show()
         self.hide()
 
+        self.client.room_added.connect(self.chat_window.refresh_rooms)
+
     def onQuitClicked(self):
         """
         Handles the click event of the quit button.
@@ -390,4 +392,28 @@ class LoginWindow(QMainWindow):
             print(err)        
 
     def showErrorPopup(self, error, error_message):
-        QMessageBox.information(self, "Can't sign in/up", error, error_message)
+        dialog = QDialog()
+        dialog.setWindowTitle(error)
+        dialog.setFixedSize(200, 300)
+
+        gif_path = os.path.join(os.path.dirname(__file__), 'error.gif')
+        gif = QMovie(gif_path)
+        gif.setScaledSize(QSize(140, 249))
+        gif_label = QLabel()
+        gif_label.setMovie(gif)
+        gif_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        gif.start()
+
+        text_label = QLabel(error_message)
+        text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        okButton = QPushButton("OK")
+        okButton.clicked.connect(dialog.accept)
+
+        layout = QVBoxLayout()
+        layout.addWidget(gif_label)
+        layout.addWidget(text_label)
+        layout.addWidget(okButton)
+        dialog.setLayout(layout)
+
+        dialog.exec()
