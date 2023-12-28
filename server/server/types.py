@@ -37,7 +37,6 @@ def handle_signup_message(message:dict, client:'Client', _:list, server:'Server'
                                                'date_creation':creation_date})
             client.login = True
             client.state = "valid"
-            server.database.execute_sql_query()
             response = json.dumps({'type': 'signup',
                                    'status': 'ok'})
         except Exception as e:
@@ -194,8 +193,7 @@ def handle_pending_room_message(message:dict, client:'Client', _:list, server:'S
             server.database.execute_sql_query("UPDATE users SET pending_rooms = :pending_rooms WHERE name = :name",
                                               {'pending_rooms':','.join(client.pending_rooms),
                                                'name':client.name,})
-            response = json.dumps({'type': 'pending_room',
-                                   'status': 'ok'})
+            response = None
             
         else:
             ## 'Client' already in room
@@ -204,7 +202,8 @@ def handle_pending_room_message(message:dict, client:'Client', _:list, server:'S
                                    'reason': 'already_in_room'})
 
         ## Send response
-        client.send(response)
+        if response:
+            client.send(response)
     else:
         ## If client is not logged in, send an error response
         response = json.dumps({'type': 'pending_room',
@@ -214,7 +213,7 @@ def handle_pending_room_message(message:dict, client:'Client', _:list, server:'S
 
 ################################################################################################################
 
-def handle_public_message(message:dict, clients:list, client:'Client', server:'Server'):
+def handle_public_message(message:dict, client:'Client', clients:list, server:'Server'):
     """
     Handle public message from the client.
 
@@ -236,7 +235,7 @@ def handle_public_message(message:dict, clients:list, client:'Client', server:'S
             ## If valid, extract message details and insert into the database
             message_text = message['message']
             date_message = datetime.datetime.now()
-            room = client.rooms
+            room = message['room']
 
             try:
                 server.database.insert_message(client.name, room, date_message, message_text)

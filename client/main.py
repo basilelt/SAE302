@@ -12,7 +12,12 @@ def main():
     login = LoginWindow()
     login.show()
 
-    sys.exit(app.exec())
+    try:
+        # Your code here
+        sys.exit(app.exec())
+    except KeyboardInterrupt:
+        print("Interrupted by keyboard")
+        QApplication.quit()
 
 if __name__ == "__main__":
     main()

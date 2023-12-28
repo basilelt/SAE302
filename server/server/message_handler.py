@@ -30,10 +30,13 @@ def handler(client:'Client', clients:list, server:'Server'):
                     logging.error("Failed to decode JSON")
         except(ConnectionResetError):
             logging.error("Connection reset")
+            break
         except(BrokenPipeError):
             logging.error("Connection broken")
+            break
         except Exception as e:
             logging.error(f"Unexpected error: {e}")
+            break
 
 def handle_message(message:dict, client:'Client', clients:list, server:'Server'):
     """

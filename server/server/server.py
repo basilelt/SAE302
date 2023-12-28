@@ -1,6 +1,7 @@
 import time
 import socket
 import logging
+import json
 from .client import Client
 from .database import DatabaseConnection
 
@@ -94,7 +95,6 @@ class Server:
         Args:
             sock (socket.socket): The server socket.
         """
-
         while not self.stop_server:
             try:
                 ## Accept new client connection
@@ -102,9 +102,6 @@ class Server:
 
                 ## Create new client
                 client = Client(conn, address, self.host, self.port, self.clients, self)
-
-                ## Add new client to clients list
-                self.clients.append(client)
             except Exception as e:
                 logging.error(f"Failed to handle a client: {e}")
 
@@ -161,9 +158,9 @@ class Server:
                                                 'timeout':timeout,
                                                 'username':username})
                 client.state = 'kick'
-                client.send({'type': 'kick',
-                             'timeout': timeout.strftime("%Y-%m-%d %H:%M:%S"),
-                             'reason': reason})
+                client.send(json.dumps({'type': 'kick',
+                                        'timeout': timeout.strftime("%Y-%m-%d %H:%M:%S"),
+                                        'reason': reason}))
                 break
     
     def kick_ip(self, ip:str, timeout:'datetime', reason:str):
@@ -177,15 +174,15 @@ class Server:
         """
         for client in self.clients:
             if client.ip[0] == ip:
-                self.database.execute("UPDATE users SET state = :kick, reason = :reason, timeout = :timeout WHERE ip = :ip",
+                self.database.execute_sql_query("UPDATE users SET state = :kick, reason = :reason, timeout = :timeout WHERE ip = :ip",
                                       {'kick':"kick_ip",
                                       'reason':ip + ":" + reason,
                                       'timeout':timeout,
                                       'ip':ip})
                 client.state = 'kick_ip'
-                client.send({'type': 'kick_ip',
-                             'timeout': timeout.strftime("%Y-%m-%d %H:%M:%S"),
-                             'reason': reason})
+                client.send(json.dumps({'type': 'kick_ip',
+                                        'timeout': timeout.strftime("%Y-%m-%d %H:%M:%S"),
+                                        'reason': reason}))
                 
     def unkick_ip(self, ip:str):
         """
@@ -198,12 +195,12 @@ class Server:
             result = self.database.fetch_user_state(client.name)
             if result == "kick_ip":
                 if client.reason.split(":")[0] == ip:
-                    self.database.execute("UPDATE users SET state = :state, reason = :reason, timeout = :timeout",
+                    self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason, timeout = :timeout",
                                           {'state': 'valid',
                                           'reason': None,
                                           'timeout': None})
                     client.state = 'valid'
-                    client.send({'type': 'unkick_ip'})
+                    client.send(json.dumps({'type': 'unkick_ip'}))
     
     def unkick_user(self, username:str):
         """
@@ -214,13 +211,13 @@ class Server:
         """
         for client in self.clients:
             if client.name == username:
-                self.database.execute("UPDATE users SET state = :state, reason = :reason, timeout = :timeout WHERE name = :username",
+                self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason, timeout = :timeout WHERE name = :username",
                                       {'state': 'valid',
                                       'reason': None,
                                       'timeout': None,
                                       'username': username})
                 client.state = 'valid'
-                client.send({'type': 'unkick'})
+                client.send(json.dumps({'type': 'unkick'}))
                 break
     
     def ban_user(self, username:str, reason:str):
@@ -231,16 +228,16 @@ class Server:
             username (str): The username.
             reason (str): The reason for banning the user.
         """
-        for client in self.clients:
-            if client.name == username:
-                self.database.execute("UPDATE users SET state = :state, reason = :reason WHERE name = :username",
-                                      {'state': 'ban',
-                                      'reason': reason,
-                                      'username': username})
-                client.state = 'ban'
-                client.send({'type': 'ban',
-                             'reason': reason})
-                break
+        client = self.database.fetch_one("SELECT name, state FROM users WHERE name = :username",
+                                        {'username': username})
+        if client is None:
+            print(f"User {username} does not exist.")
+            return
+        self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason WHERE name = :username",
+                                        {'state': 'ban',
+                                        'reason': reason,
+                                        'username': username})
+        print(f"User {username} has been banned for reason: {reason}")
 
     def ban_ip(self, ip:str, reason:str):
         """
@@ -252,12 +249,12 @@ class Server:
         """
         for client in self.clients:
             if client.ip[0] == ip:
-                self.database.execute("UPDATE users SET state = :state, reason = :reason WHERE ip = :ip",
+                self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason WHERE ip = :ip",
                                       {'state': 'ban_ip',
                                       'reason': ip + ":" + reason})
                 client.state = 'ban_ip'
-                client.send({'type': 'ban_ip',
-                             'reason': reason})
+                client.send(json.dumps({'type': 'ban_ip',
+                                        'reason': reason}))
                 
     def unban_ip(self, ip:str):
         """
@@ -270,11 +267,11 @@ class Server:
             result = self.database.fetch_user_state(client.name)
             if result == "ban_ip":
                 if client.reason.split(":")[0] == ip:
-                    self.database.execute("UPDATE users SET state = :state, reason = :reason",
+                    self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason",
                                           {'state': 'valid',
                                           'reason': None})
                     client.state = 'valid'
-                    client.send({'type': 'unban_ip'})
+                    client.send(json.dumps({'type': 'unban_ip'}))
     
     def unban_user(self, username:str):
         """
@@ -283,15 +280,18 @@ class Server:
         Args:
             username (str): The username.
         """
-        for client in self.clients:
-            if client.name == username:
-                self.database.execute("UPDATE users SET state = :state, reason = :reason WHERE name = :username",
-                                      {'state': 'valid',
-                                      'reason': None,
-                                      'username': username})
-                client.state = 'valid'
-                client.send({'type': 'unban'})
-                break
+        client = self.database.fetch_one("SELECT name, state FROM users WHERE name = :username",
+                                        {'username': username})
+        if client is None:
+            print(f"User {username} does not exist.")
+            return
+        if client.state != 'ban':
+            print(f"User {username} is not banned.")
+            return
+        self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason WHERE name = :username",
+                                        {'state': 'valid',
+                                        'reason': None,
+                                        'username': username})
     
     def kill(self, user:str, reason:str):
         """
@@ -303,7 +303,7 @@ class Server:
         """
         for client in self.clients:
             if client.name == user:
-                client.send({'type': 'kill',
-                             'reason': reason})
+                client.send(json.dumps({'type': 'kill',
+                                        'reason': reason}))
                 break
             

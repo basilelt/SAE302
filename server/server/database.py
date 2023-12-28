@@ -86,6 +86,12 @@ class DatabaseConnection:
                                 {'user': user})
         return result[0].encode('utf-8') if result else None
     
+    def fetch_messages_since(self, date):
+        """Fetches all messages from the database since a specific date."""
+        result = self.fetch_all("SELECT user, room, date_message, body FROM messages WHERE date_message >= :date",
+                                {'date': date})
+        return result if result else []
+    
     def get_rooms(self):
         """Fetches all rooms from the database."""
         result = self.fetch_all("SELECT name FROM rooms")

@@ -353,8 +353,12 @@ class LoginWindow(QMainWindow):
             server = self.__server.text()
             port = int(self.__port.text())
             self.client = Client(username, password, server, port)
+
             self.client.connected.connect(self.onClientConnected)
+            self.client.connection_failed.connect(self.handle_disconnection)
             self.client.error_received.connect(self.showErrorPopup)
+
+            self.client.connect()
         except Exception as err:
             print(err)
 
@@ -375,8 +379,11 @@ class LoginWindow(QMainWindow):
         if self.client != None:
             self.client.close()
         QApplication.exit(0)
-        
 
+    def closeEvent(self, event):
+        self.client.close()
+        event.accept()  # Let the window close
+        
     def onRegisterClicked(self):
         """
         Handles the click event of the register button.
@@ -386,10 +393,19 @@ class LoginWindow(QMainWindow):
             password = self.__password.text()
             server = self.__server.text()
             port = int(self.__port.text())
-            self.client = Client(username, password, server, port, register=True)
+            self.client = Client(username, password, server, port)
+
+            self.client.connection_failed.connect(self.handle_disconnection)
             self.client.error_received.connect(self.showErrorPopup)
+
+            self.client.connect(register=True)
         except Exception as err:
-            print(err)        
+            print(err)    
+
+    def handle_disconnection(self):
+        if self.chat_window is not None:
+            self.chat_window.hide()
+        self.show()
 
     def showErrorPopup(self, error, error_message):
         dialog = QDialog()

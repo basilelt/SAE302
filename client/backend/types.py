@@ -1,4 +1,6 @@
 ## Import the types for documentation purposes
+import logging
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .client import Client
@@ -47,12 +49,32 @@ def handle_ban_message(client:'Client', message:dict):
     pass
 
 def handle_pending_room_message(client:'Client', message:dict):
-    room = message['room']
-    client.rooms.append(room)
-    client.room_added.emit()  # Emit the signal
+    status = message['status']
+    if status == 'ok':
+        room = message['room']
+        client.rooms.append(room)
+        client.room_added.emit()  # Emit the signal
+    elif status == 'error':
+        reason = message['reason']
+        client.error_received.emit(status, reason)
 
 def handle_public_message(client:'Client', message:dict):
-    pass
+    print(message)
+    if 'status' in message and message['status'] == 'error':
+        reason = message['reason']
+        client.error_received.emit('error', reason)
+    elif 'room' in message and 'user' in message and 'message' in message:
+        room = message['room']
+        sender = message['user']
+        content = message['message']
+        client.public_message_received.emit(room, sender, content)
+    else:
+        print("Invalid message format")
 
 def handle_private_message(client:'Client', message:dict):
     pass
+
+def handle_disconnect_message(client:'Client', message:dict):
+    if message['status'] == "ok":
+        logging.info("Disconnected")
+        

@@ -3,9 +3,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from backend.client import Client
 
-from PyQt6.QtWidgets import QMainWindow, QListWidget, QListWidgetItem, QLabel, QVBoxLayout, QWidget, QSplitter, QScrollArea, QCheckBox, QPushButton, QGridLayout, QSpacerItem, QSizePolicy
+from PyQt6.QtWidgets import QMainWindow, QSplitter, QListWidget, QWidget, QGridLayout, QLabel, QCheckBox, QPushButton, QTextBrowser, QLineEdit, QListWidgetItem, QStackedLayout
 from PyQt6.QtGui import QPixmap, QPainter, QBrush, QColor
-from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtCore import Qt, QSize, pyqtSlot
 
 class ChatWindow(QMainWindow):
     def __init__(self, client:'Client'):
@@ -23,6 +23,8 @@ class ChatWindow(QMainWindow):
         self.list_widget.setMinimumWidth(100)
         self.splitter.addWidget(self.list_widget)
 
+        self.messages = {}
+
         self.add_room("home")
 
         for room in client.rooms:
@@ -33,8 +35,14 @@ class ChatWindow(QMainWindow):
         self.subwindow = QWidget()
         self.splitter.addWidget(self.subwindow)
 
-        self.layout = QGridLayout()
-        self.subwindow.setLayout(self.layout)
+        self.stacked_layout = QStackedLayout()
+        self.subwindow.setLayout(self.stacked_layout)
+
+        self.home_widget = self.create_home_widget()
+        self.room_widget = self.create_room_widget()
+
+        self.stacked_layout.addWidget(self.home_widget)
+        self.stacked_layout.addWidget(self.room_widget)
 
         self.setCentralWidget(self.splitter)
 
@@ -60,8 +68,8 @@ class ChatWindow(QMainWindow):
 
     def send_rooms(self):
         selected_rooms = []
-        for i in range(self.layout.count()):
-            widget = self.layout.itemAt(i).widget()
+        for i in range(self.home_widget.layout().count()):
+            widget = self.home_widget.layout().itemAt(i).widget()
             if isinstance(widget, QCheckBox) and widget.isChecked():
                 selected_rooms.append(widget.text())
         for room in selected_rooms:
@@ -73,37 +81,60 @@ class ChatWindow(QMainWindow):
             title = label.text()
             self.subwindow.setWindowTitle(title)
 
-            # Clear the layout
-            for i in reversed(range(self.layout.count())): 
-                widget = self.layout.itemAt(i).widget()
-                self.layout.removeWidget(widget)
-                widget.setParent(None)
-
             if title == "home":
-                title = QLabel("Choose the rooms you want to join")
-                self.layout.addWidget(title, 1, 1)
-
-                for i, room in enumerate(self.client.all_rooms):
-                    checkbox = QCheckBox(room)
-                    self.layout.addWidget(checkbox, i + 2, 1)
-
-                self.send_button = QPushButton("Send")
-                self.layout.addWidget(self.send_button, len(self.client.all_rooms) + 2, 1)
-
-                self.layout.setColumnStretch(0, 1)
-                self.layout.setColumnStretch(2, 1)
-                self.layout.setRowStretch(0, 1)
-                self.layout.setRowStretch(len(self.client.all_rooms) + 3, 1)
-
-                self.send_button = QPushButton("Send")
-                self.send_button.clicked.connect(self.send_rooms)  # Connect the signal
-                self.layout.addWidget(self.send_button, len(self.client.all_rooms) + 2, 1)
-
-            else:  # For other rooms
-                # Add your widgets for other rooms here
-                pass
+                self.stacked_layout.setCurrentWidget(self.home_widget)
+            else:
+                self.stacked_layout.setCurrentWidget(self.room_widget)
+                # Clear the text browser and display the previous messages for this room
+                self.textBrowser.clear()
+                if title in self.messages:
+                    for message in self.messages[title]:
+                        self.textBrowser.append(message)
         else:
             print("No widget set for item")
+
+    def create_home_widget(self):
+        widget = QWidget()
+        layout = QGridLayout()
+        widget.setLayout(layout)
+
+        title = QLabel("Choose the rooms you want to join")
+        layout.addWidget(title, 1, 1)
+
+        for i, room in enumerate(self.client.all_rooms):
+            checkbox = QCheckBox(room)
+            layout.addWidget(checkbox, i + 2, 1)
+
+        send_button = QPushButton("Send")
+        layout.addWidget(send_button, len(self.client.all_rooms) + 2, 1)
+
+        layout.setColumnStretch(0, 1)
+        layout.setColumnStretch(2, 1)
+        layout.setRowStretch(0, 1)
+        layout.setRowStretch(len(self.client.all_rooms) + 3, 1)
+
+        send_button.clicked.connect(self.send_rooms)
+
+        return widget
+
+    def create_room_widget(self):
+        widget = QWidget()
+        layout = QGridLayout()
+        widget.setLayout(layout)
+
+        self.textBrowser = QTextBrowser()
+        layout.addWidget(self.textBrowser, 1, 1, 1, 1) 
+
+        self.messageInput = QLineEdit()
+        layout.addWidget(self.messageInput, 2, 1)
+
+        sendButton = QPushButton("Send")
+        sendButton.clicked.connect(self.send_message)
+        layout.addWidget(sendButton, 3, 1)
+
+        self.client.public_message_received.connect(self.display_public_message)
+
+        return widget
 
     def refresh_rooms(self):
         self.list_widget.clear()
@@ -111,4 +142,26 @@ class ChatWindow(QMainWindow):
         self.add_room("home")
         for room in self.client.rooms:
             self.add_room(room)
-            
+    
+    @pyqtSlot()
+    def send_message(self):
+        message = self.messageInput.text()
+        room = self.subwindow.windowTitle()
+        self.client.send_public_message(room, message)
+        self.messageInput.clear()
+
+    @pyqtSlot(str, str, str)
+    def display_public_message(self, room, sender, content):
+        message = f"{sender}: {content}"
+        # Always add the message to the dictionary
+        if room not in self.messages:
+            self.messages[room] = []
+        self.messages[room].append(message)
+
+        # Only display the message if it's for the current room
+        if room == self.subwindow.windowTitle():
+            self.textBrowser.append(message)
+
+    def closeEvent(self, event):
+        self.client.close()
+        event.accept()  # Let the window close

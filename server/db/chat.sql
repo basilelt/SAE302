@@ -17,7 +17,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `rooms` (
   `name` VARCHAR(60) PRIMARY KEY NOT NULL,
-  `type` VARCHAR(7) NOT NULL DEFAULT "public",
+  `type` VARCHAR(7) NOT NULL DEFAULT "public"
 );
 
 CREATE TABLE `messages` (

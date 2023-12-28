@@ -24,7 +24,8 @@ def handle_message(client:'Client', message:dict):
         'ban_ip': handle_ban_message,
         'pending_room': handle_pending_room_message,
         'public': handle_public_message,
-        'private': handle_private_message
+        'private': handle_private_message,
+        'disconnect': handle_disconnect_message,
     }
 
     ## Call the corresponding handler

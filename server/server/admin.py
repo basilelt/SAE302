@@ -1,5 +1,13 @@
 from datetime import datetime, timedelta
 
+try:
+    import readline
+except ImportError:
+    try:
+        import pyreadline3 as readline
+    except ImportError:
+        print("Please install pyreadline on Windows")
+
 ## Import the types for documentation purposes
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -7,7 +15,7 @@ if TYPE_CHECKING:
 
 def convert_to_date(time_str:str) -> datetime:
     """
-    Convert a string to a datetime object.
+    Convert a string to a datetime object with a delta.
 
     Args:
         time_str (str): The string to convert.
@@ -30,7 +38,7 @@ def convert_to_date(time_str:str) -> datetime:
 
 def convert_to_date_minus(time_str:str) -> datetime:
     """
-    Convert a string to a datetime object.
+    Convert a string to a datetime object with a delta.
 
     Args:
         time_str (str): The string to convert.
@@ -63,7 +71,51 @@ def admin_console(server:'Server'):
     """
     print("Admin console")
     print("Type 'help' for a list of commands.")
-    
+
+def create_completer(server:'Server') -> 'function':
+    """
+    Creates a function that can be used as a completer for readline.
+
+    Args:
+        server (Server): The server instance. Used to get the list of clients for user-specific commands.
+
+    Returns:
+        function: A function that takes the current text and a state and returns the next matching command.
+    """
+    base_commands = ["help", "messages", "users", "rooms", "add room", "pending rooms", "accept pending", "kick", "unkick", "ban", "unban", "kill", "shutdown"]
+    user_commands = [f"{command} {user.name}" for command in ["kick", "unkick", "ban", "unban", "pending rooms", "accept pending"] for user in server.clients]
+    ip_commands = [f"{command} ip" for command in ["ban", "unban"]]
+
+    def completer(text:str, state:int) -> str or None:
+        """
+        Returns the next matching command.
+
+        Args:
+            text (str): The current text.
+            state (int): The state.
+
+        Returns:
+            str or None: The next matching command.
+        """
+        line = readline.get_line_buffer().split()
+        if not line:
+            commands = base_commands
+        else:
+            first_word = line[0]
+            if first_word in ["ban", "unban"]:
+                commands = ip_commands + user_commands
+            elif any(first_word == cmd for cmd in ["kick", "unkick", "pending rooms", "accept pending"]):
+                commands = user_commands
+            else:
+                commands = base_commands
+
+        options = [i for i in commands if i.startswith(text)]
+        if state < len(options):
+            return options[state]
+        else:
+            return None
+
+    return completer
 
 def admin_cmd(server:'Server'):
     """
@@ -72,29 +124,33 @@ def admin_cmd(server:'Server'):
     Args:
         server ('Server'): The server.
     """
+    readline.parse_and_bind("tab: complete")
+    readline.set_completer(create_completer(server))
+
     while not server.stop_server:
-        command = input()
+        command = input("> ")
+        readline.add_history(command)
         if command == "help":
-            print("Available commands:")
-            print("help - display this help message")
-            print("")
-            print("messages <time> - display a list of all messages since a time")
-            print("users - display a list of all users")
-            print("")
-            print("rooms - display a list of all rooms")
-            print("add room <room1,room2,...> - add a room")
-            print("pending rooms <username> - display a list of pending rooms for a user")
-            print("accept pending <username> <room1,room2,...> - accept pending rooms for a user")
-            print("")
-            print("kick <username> <timeout> <reason> - kick a user")
-            print("unkick <username> - unkick a user")
-            print("")
-            print("ban <username> <reason> - ban a user")
-            print("ban ip <ip> <reason> - ban an IP address")
-            print("unban <username> - unban a user")
-            print("unban ip <ip> - unban an IP address")
-            print("")
-            print("shutdown - shutdown the server")
+            print("""Available commands:
+help - display this help message
+
+messages <time> - display a list of all messages since a time
+users - display a list of all users
+
+rooms - display a list of all rooms
+add room <room1,room2,...> - add a room
+pending rooms <username> - display a list of pending rooms for a user
+accept pending <username> <room1,room2,...> - accept pending rooms for a user
+
+kick <username> <timeout> <reason> - kick a user
+unkick <username> - unkick a user
+
+ban <username> <reason> - ban a user
+ban ip <ip> <reason> - ban an IP address
+unban <username> - unban a user
+unban ip <ip> - unban an IP address")
+
+shutdown - shutdown the server""")
 
         ########################################################################################################
 
@@ -102,9 +158,11 @@ def admin_cmd(server:'Server'):
             try:
                 date = convert_to_date_minus(command.split(" ")[1])
                 print(f"Messages since {date}:")
-                for message in server.messages:
-                    if message.date >= date:
-                        print(message)
+                ## Get messages in the database since the date
+                for message in server.database.fetch_messages_since(date):
+                    ## Convert the date to a string
+                    date_str = message[2].strftime("%Y-%m-%d %H:%M:%S")
+                    print(message[0] + " in " + message[1] + " at " + date_str + " : " + message[3])
             except IndexError:
                 print("Please specify a date")
         
@@ -143,17 +201,20 @@ def admin_cmd(server:'Server'):
                 username = command.split(" ")[2]
                 rooms = command.split(" ")[3]
                 if rooms == "all":
-                    ## some empty thingy to fix
                     for client in server.clients:
                         if client.name == username:
                             for room in client.pending_rooms:
-                                client.addroom(server, room) 
+                                # Check if the user is already in the room
+                                if room not in client.rooms:
+                                    client.addroom(server, room) 
                             break
                 else:
                     for room in rooms.split(","):
                         for client in server.clients:
                             if client.name == username:
-                                client.addroom(server, room)
+                                # Check if the user is already in the room
+                                if room not in client.rooms:
+                                    client.addroom(server, room)
                                 break
             except IndexError:
                 print("Please specify a username and a room")
