@@ -308,6 +308,11 @@ def handle_private_message(message:dict, client:'Client', clients:list, server:'
                                                'reason': str(e)})
                         client.send(response)
                         return
+                    
+                ## Send a success response
+                response = json.dumps({'type': 'private',
+                                       'status': 'ok'})
+                client.send(response)
 
         else:
             ## If recipient not found, send an error response

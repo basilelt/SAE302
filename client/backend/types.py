@@ -72,7 +72,11 @@ def handle_public_message(client:'Client', message:dict):
         print("Invalid message format")
 
 def handle_private_message(client:'Client', message:dict):
-    pass
+    if message['status'] == 'ok':
+        return
+    elif message['status'] == 'error':
+        reason = message['reason']
+        client.error_received.emit(f"Error sending private", reason)
 
 def handle_disconnect_message(client:'Client', message:dict):
     if message['status'] == "ok":
