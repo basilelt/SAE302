@@ -5,49 +5,35 @@ import os
 from backend.client import Client
 from .chat import ChatWindow
 
+import logging
+
 class LoginWindow(QMainWindow):
     """
     A class to represent a login window.
 
     ...
 
-    Attributes
-    ----------
-    animationGroup : QSequentialAnimationGroup
-        a group of animations that will be played sequentially
-    connectOriginalSize : QSize
-        the original size of the connect button
-    quitOriginalSize : QSize
-        the original size of the quit button
-    registerOriginalSize : QSize
-        the original size of the register button
+    :attr animationGroup: a group of animations that will be played sequentially.
+    :type animationGroup: QSequentialAnimationGroup
+    :attr connectOriginalSize: the original size of the connect button.
+    :type connectOriginalSize: QSize
+    :attr quitOriginalSize: the original size of the quit button.
+    :type quitOriginalSize: QSize
+    :attr registerOriginalSize: the original size of the register button.
+    :type registerOriginalSize: QSize
 
-    Methods
-    -------
-    setupCSS():
-        Sets up the CSS for the window.
-    setupWidgets():
-        Sets up the widgets for the window.
-    createLineEdit() -> QLineEdit:
-        Creates a QLineEdit widget with a specific style.
-    createGroup(labelText: str, lineEdit: QLineEdit) -> QGroupBox:
-        Creates a QGroupBox with a QLabel and a QLineEdit.
-    setupLayout():
-        Sets up the layout for the window.
-    setupAnimations():
-        Sets up the animations for the buttons.
-    showEvent(event: QShowEvent):
-        Overrides the showEvent method to set up the button animations.
-    animateButton(button: QPushButton, animation: QPropertyAnimation, originalSize: QSize):
-        Animates a button when it is clicked.
-    keyPressEvent(event: QKeyEvent):
-        Overrides the keyPressEvent method to handle Return and Enter key presses.
-    onConnectClicked():
-        Handles the click event of the connect button.
-    onQuitClicked():
-        Handles the click event of the quit button.
-    onRegisterClicked():
-        Handles the click event of the register button.
+    :method setupCSS(): Sets up the CSS for the window.
+    :method setupWidgets(): Sets up the widgets for the window.
+    :method createLineEdit() -> QLineEdit: Creates a QLineEdit widget with a specific style.
+    :method createGroup(labelText: str, lineEdit: QLineEdit) -> QGroupBox: Creates a QGroupBox with a QLabel and a QLineEdit.
+    :method setupLayout(): Sets up the layout for the window.
+    :method setupAnimations(): Sets up the animations for the buttons.
+    :method showEvent(event: QShowEvent): Overrides the showEvent method to set up the button animations.
+    :method animateButton(button: QPushButton, animation: QPropertyAnimation, originalSize: QSize): Animates a button when it is clicked.
+    :method keyPressEvent(event: QKeyEvent): Overrides the keyPressEvent method to handle Return and Enter key presses.
+    :method onConnectClicked(): Handles the click event of the connect button.
+    :method onQuitClicked(): Handles the click event of the quit button.
+    :method onRegisterClicked(): Handles the click event of the register button.
     """
     def __init__(self):
         """
@@ -130,10 +116,8 @@ class LoginWindow(QMainWindow):
 
         This method creates a QLineEdit widget and sets its background color and border style.
 
-        Returns
-        -------
-        QLineEdit
-            The created QLineEdit widget.
+        :returns: The created QLineEdit widget.
+        :rtype: QLineEdit
         """
         ## Create a QLineEdit widget
         lineEdit = QLineEdit()
@@ -160,17 +144,12 @@ class LoginWindow(QMainWindow):
 
         This method creates a QLabel with the given text and aligns it to the center. It then creates a QGroupBox and sets its layout to a QVBoxLayout. Finally, it adds the label and line edit to the layout.
 
-        Parameters
-        ----------
-        labelText : str
-            The text for the QLabel.
-        lineEdit : QLineEdit
-            The QLineEdit to add to the QGroupBox.
-
-        Returns
-        -------
-        QGroupBox
-            The created QGroupBox.
+        :param labelText: The text for the QLabel.
+        :type labelText: str
+        :param lineEdit: The QLineEdit to add to the QGroupBox.
+        :type lineEdit: QLineEdit
+        :returns: The created QGroupBox.
+        :rtype: QGroupBox
         """
         ## Create a QLabel with the given text and align it to the center
         label = QLabel(labelText)
@@ -248,10 +227,8 @@ class LoginWindow(QMainWindow):
 
         This method saves the original sizes of the connect, quit, and register buttons. It also connects the clicked signal of each button to a lambda function that calls the animateButton method.
 
-        Parameters
-        ----------
-        event : QShowEvent
-            The show event.
+        :param event: The show event.
+        :type event: QShowEvent
         """
         ## Store the original sizes of the buttons
         self.connectOriginalSize = self.connect.size()
@@ -270,14 +247,12 @@ class LoginWindow(QMainWindow):
 
         This method creates a QGraphicsDropShadowEffect, sets its properties, and applies it to the button. It then starts the animation and sets a timer to remove the effect after the animation is finished.
 
-        Parameters
-        ----------
-        button : QPushButton
-            The button to animate.
-        animation : QPropertyAnimation
-            The animation to apply to the button.
-        originalSize : QSize
-            The original size of the button.
+        :param button: The button to animate.
+        :type button: QPushButton
+        :param animation: The animation to apply to the button.
+        :type animation: QPropertyAnimation
+        :param originalSize: The original size of the button.
+        :type originalSize: QSize
         """
         ## If the animation is running, stop it
         if animation.state() == QPropertyAnimation.State.Running:
@@ -325,10 +300,8 @@ class LoginWindow(QMainWindow):
 
         This method checks if the pressed key is Return or Enter. If the user line edit has focus, it sets the focus to the password line edit. If the password line edit has focus, it sets the focus to the server line edit. If the server line edit has focus, it sets the focus to the port line edit. If the port line edit has focus, it clicks the connect button.
 
-        Parameters
-        ----------
-        event : QKeyEvent
-            The key press event.
+        :param event: The key press event.
+        :type event: QKeyEvent
         """
         ## Check if the pressed key is Return or Enter
         if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
@@ -360,7 +333,7 @@ class LoginWindow(QMainWindow):
 
             self.client.connect()
         except Exception as err:
-            print(err)
+            logging.error(f"Failed to connect to the server: {err}")
 
     def onClientConnected(self):
         """
@@ -381,8 +354,11 @@ class LoginWindow(QMainWindow):
         QApplication.exit(0)
 
     def closeEvent(self, event):
+        """
+        Overrides the closeEvent method to close the client.
+        """
         self.client.close()
-        event.accept()  # Let the window close
+        event.accept()
         
     def onRegisterClicked(self):
         """
@@ -403,15 +379,33 @@ class LoginWindow(QMainWindow):
             print(err)    
 
     def handle_disconnection(self):
+        """
+        Handles the disconnection of the client.
+        """
+        ## Show the login window and hide the chat window
         if self.chat_window is not None:
             self.chat_window.hide()
         self.show()
 
-    def showErrorPopup(self, error, error_message):
+    def showErrorPopup(self, error:str, error_message:str):
+        """
+        Show an error dialog with a given title and message.
+
+        This function creates a QDialog with a specified error title and message.
+        It also displays an error gif in the dialog. The dialog has an "OK" button
+        that closes the dialog when clicked.
+
+        :param error: The title of the error dialog.
+        :type error: str
+        :param error_message: The message to display in the error dialog.
+        :type error_message: str
+        """
+         # Create a new dialog
         dialog = QDialog()
         dialog.setWindowTitle(error)
         dialog.setFixedSize(200, 300)
 
+        # Set up the error gif
         gif_path = os.path.join(os.path.dirname(__file__), 'error.gif')
         gif = QMovie(gif_path)
         gif.setScaledSize(QSize(140, 249))
@@ -420,16 +414,20 @@ class LoginWindow(QMainWindow):
         gif_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         gif.start()
 
+        # Set up the error message
         text_label = QLabel(error_message)
         text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+        # Set up the "OK" button
         okButton = QPushButton("OK")
         okButton.clicked.connect(dialog.accept)
 
+        # Set up the layout
         layout = QVBoxLayout()
         layout.addWidget(gif_label)
         layout.addWidget(text_label)
         layout.addWidget(okButton)
         dialog.setLayout(layout)
 
+        # Show the dialog
         dialog.exec()

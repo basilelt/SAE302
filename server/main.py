@@ -12,7 +12,7 @@ def main():
     """
 
     ## Configure logging
-    logging.basicConfig(filename='server.log', level=logging.INFO)
+    logging.basicConfig(filename='server.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
     parser = argparse.ArgumentParser(description='Python chat server.')
     parser.add_argument('-a', '--host', type=str, required=True, help='Host address')

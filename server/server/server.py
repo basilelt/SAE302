@@ -9,9 +9,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from datetime import datetime
 
-## Set up logging
-logging.basicConfig(filename='server.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
-
 class Server:
     """
     The Server class handles the creation of the server and client management.

@@ -91,7 +91,6 @@ class ChatWindow(QMainWindow):
                 self.username_input.clear()
             else:
                 self.stacked_layout.setCurrentWidget(self.room_widget)
-                # Clear the text browser and display the previous messages for this room
                 self.textBrowser.clear()
                 if title in self.messages:
                     for message in self.messages[title]:
@@ -170,7 +169,6 @@ class ChatWindow(QMainWindow):
 
     def refresh_rooms(self):
         self.list_widget.clear()
-
         self.add_room("home")
         for room in self.client.rooms:
             self.add_room(room)
@@ -188,24 +186,23 @@ class ChatWindow(QMainWindow):
 
         if username:
             self.client.send_private_message(username, "initiate")
-
-            # Clear the input fields
             self.username_input.clear()
         else:
             self.client.error_received.emit("Invalid Input", "Username must be filled")
 
     @pyqtSlot(str, str, str)
-    def display_public_message(self, room, sender, content):
+    def display_public_message(self, room:str, sender:str, content:str):
         message = f"{sender}: {content}"
-        # Always add the message to the dictionary
         if room not in self.messages:
             self.messages[room] = []
         self.messages[room].append(message)
 
-        # Only display the message if it's for the current room
         if room == self.subwindow.windowTitle():
             self.textBrowser.append(message)
 
     def closeEvent(self, event):
+        """
+        Overrides the closeEvent method to close the client.
+        """
         self.client.close()
-        event.accept()  # Let the window close
+        event.accept()
