@@ -37,6 +37,7 @@ def handle_signup_message(message:dict, client:'Client', _:list, server:'Server'
                                                'date_creation':creation_date})
             client.login = True
             client.state = "valid"
+            client.addroom(server, "Général")
             response = json.dumps({'type': 'signup',
                                    'status': 'ok'})
         except Exception as e:
@@ -189,11 +190,14 @@ def handle_pending_room_message(message:dict, client:'Client', _:list, server:'S
                                    'status': 'error',
                                    'reason': 'room_does_not_exist'})
         elif room not in client.rooms and room is not None:
-            client.pending_rooms.append(room)
-            server.database.execute_sql_query("UPDATE users SET pending_rooms = :pending_rooms WHERE name = :name",
-                                              {'pending_rooms':','.join(client.pending_rooms),
-                                               'name':client.name,})
-            response = None
+            if room == "Blabla":
+                client.addroom(server, room)
+            else:
+                client.pending_rooms.append(room)
+                server.database.execute_sql_query("UPDATE users SET pending_rooms = :pending_rooms WHERE name = :name",
+                                                {'pending_rooms':','.join(client.pending_rooms),
+                                                'name':client.name,})
+                response = None
             
         else:
             ## 'Client' already in room
