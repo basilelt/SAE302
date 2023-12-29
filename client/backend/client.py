@@ -97,13 +97,20 @@ class Client(QObject):
                 'message': message}
         self.__socket_tcp.send(json.dumps(data).encode())
     
+    def send_private_message(self, username:str, message:str):
+        private_message = {'type': 'private',
+                           'to': username,  # The 'room' field is the recipient's username
+                           'user': self.username,  # The 'user' field is the sender's username
+                           'message': message}
+        self.__socket_tcp.send(json.dumps(private_message).encode())
+    
     def close(self):
         self.listen_flag = True
         try:
             self.__socket_tcp.getpeername()
             self.__socket_tcp.send(json.dumps({'type': 'disconnect'}).encode())
         except OSError:
-            pass  # Socket is not connected
+            pass
         if hasattr(self, 'thread_listen'):
             self.thread_listen.join()
         self.__socket_tcp.close()

@@ -262,7 +262,7 @@ def handle_public_message(message:dict, client:'Client', clients:list, server:'S
 
 ################################################################################################################
 
-def handle_private_message(message:dict, clients:list, client:'Client', server:'Server'):
+def handle_private_message(message:dict, client:'Client', clients:list, server:'Server'):
     """
     Handle private message from the client.
 
@@ -296,11 +296,12 @@ def handle_private_message(message:dict, clients:list, client:'Client', server:'
 
                 ## If room doesn't exist, create it
                 if not server.database.room_exists(room):
-                    client.rooms = room
-                    to_user.rooms = room
                     try:
-                        server.database.execute_sql_query("INSERT INTO rooms (name) VALUES (:name)",
-                                                          {'name':room})
+                        server.database.execute_sql_query("INSERT INTO rooms (name, type) VALUES (:name, :type)",
+                                                          {'name': room,
+                                                           'type': 'private'})
+                        client.addroom(server, room)
+                        to_user.addroom(server, room)
                     except Exception as e:
                         response = json.dumps({'type': 'private',
                                                'status': 'error',
@@ -308,25 +309,6 @@ def handle_private_message(message:dict, clients:list, client:'Client', server:'
                         client.send(response)
                         return
 
-                ## If recipient is valid, send the message
-                if to_user.state == "valid":
-                    try:
-                        server.database.insert_message(client.name, room, date_message, message_text)
-                        response = json.dumps({'type': 'private',
-                                               'room': room,
-                                               'user': client.name,
-                                               'message': message_text})
-                        to_user.send(response)
-                    except Exception as e:
-                        response = json.dumps({'type': 'private',
-                                               'status': 'error',
-                                               'reason': str(e)})
-                        client.send(response)
-                else:
-                    response = json.dumps({'type': 'private',
-                                           'status': 'error',
-                                           'reason': 'recipient_is_not_valid'})
-                    client.send(response)
         else:
             ## If recipient not found, send an error response
             response = json.dumps({'type': 'private',

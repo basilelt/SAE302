@@ -112,15 +112,16 @@ class Client:
             server (Server): The server.
             room (str): The room to add.
         """
-        self.pending_rooms.remove(room)
-        server.database.execute_sql_query("UPDATE users SET pending_rooms = :pending_rooms WHERE name = :name",
-                                          {'pending_rooms': ','.join(self.pending_rooms),
-                                           'name': self.name})
+        if room in self.pending_rooms:
+            self.pending_rooms.remove(room)
+            server.database.execute_sql_query("UPDATE users SET pending_rooms = :pending_rooms WHERE name = :name",
+                                            {'pending_rooms': ','.join(self.pending_rooms),
+                                            'name': self.name})
         self.rooms.append(room)
         server.database.execute_sql_query("INSERT INTO belong (user, room) VALUES (:user, :room)",
-                                          {'user': self.name,
-                                           'room': room})
+                                        {'user': self.name,
+                                        'room': room})
         
         self.send(json.dumps({'type': 'pending_room',
-                   'status': 'ok',
-                   'room': room}))
+                              'status': 'ok',
+                              'room': room}))

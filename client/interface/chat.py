@@ -26,6 +26,7 @@ class ChatWindow(QMainWindow):
         self.messages = {}
 
         self.add_room("home")
+        self.add_room("private")
 
         for room in client.rooms:
             self.add_room(room)
@@ -39,9 +40,11 @@ class ChatWindow(QMainWindow):
         self.subwindow.setLayout(self.stacked_layout)
 
         self.home_widget = self.create_home_widget()
+        self.private_message_widget = self.create_private_message_widget() 
         self.room_widget = self.create_room_widget()
 
         self.stacked_layout.addWidget(self.home_widget)
+        self.stacked_layout.addWidget(self.private_message_widget)
         self.stacked_layout.addWidget(self.room_widget)
 
         self.setCentralWidget(self.splitter)
@@ -83,6 +86,9 @@ class ChatWindow(QMainWindow):
 
             if title == "home":
                 self.stacked_layout.setCurrentWidget(self.home_widget)
+            elif title == "private":
+                self.stacked_layout.setCurrentWidget(self.private_message_widget)
+                self.username_input.clear()
             else:
                 self.stacked_layout.setCurrentWidget(self.room_widget)
                 # Clear the text browser and display the previous messages for this room
@@ -114,6 +120,32 @@ class ChatWindow(QMainWindow):
         layout.setRowStretch(len(self.client.all_rooms) + 3, 1)
 
         send_button.clicked.connect(self.send_rooms)
+
+        return widget
+
+    def create_private_message_widget(self):
+        widget = QWidget()
+        layout = QGridLayout()
+        widget.setLayout(layout)
+
+        title = QLabel("Send a private message")
+        layout.addWidget(title, 1, 1)
+
+        username_label = QLabel("Username:")
+        layout.addWidget(username_label, 2, 1)
+
+        self.username_input = QLineEdit()
+        layout.addWidget(self.username_input, 2, 2)
+
+        send_button = QPushButton("Send")
+        layout.addWidget(send_button, 4, 1, 1, 2)
+
+        layout.setColumnStretch(0, 1)
+        layout.setColumnStretch(3, 1)
+        layout.setRowStretch(0, 1)
+        layout.setRowStretch(5, 1)
+
+        send_button.clicked.connect(self.send_private_message)
 
         return widget
 
@@ -149,6 +181,18 @@ class ChatWindow(QMainWindow):
         room = self.subwindow.windowTitle()
         self.client.send_public_message(room, message)
         self.messageInput.clear()
+    
+    @pyqtSlot()
+    def send_private_message(self):
+        username = self.username_input.text()
+
+        if username:
+            self.client.send_private_message(username, "initiate")
+
+            # Clear the input fields
+            self.username_input.clear()
+        else:
+            self.client.error_received.emit("Invalid Input", "Username must be filled")
 
     @pyqtSlot(str, str, str)
     def display_public_message(self, room, sender, content):

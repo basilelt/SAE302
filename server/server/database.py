@@ -93,8 +93,8 @@ class DatabaseConnection:
         return result if result else []
     
     def get_rooms(self):
-        """Fetches all rooms from the database."""
-        result = self.fetch_all("SELECT name FROM rooms")
+        """Fetches all public rooms from the database."""
+        result = self.fetch_all("SELECT name FROM rooms WHERE type = 'public'")
         return [room[0] for room in result] if result else None
 
     def room_exists(self, room):
