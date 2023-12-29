@@ -150,13 +150,20 @@ class Server:
             timeout ('datetime'): Date and time when the user can join the server again.
             reason (str): The reason for kicking the user.
         """
+        user = self.database.fetch_one("SELECT name, state FROM users WHERE name = :username",
+                                    {'username': username})
+        if user is None:
+            print(f"User {username} does not exist.")
+            return
+        self.database.execute_sql_query("UPDATE users SET state = :kick, reason = :reason, timeout = :timeout WHERE name = :username",
+                                        {'kick':"kick",
+                                         'reason':reason,
+                                         'timeout':timeout,
+                                         'username':username})
+
+        # Check if the user is currently connected
         for client in self.clients:
             if client.name == username:
-                self.database.execute_sql_query("UPDATE users SET state = :kick, reason = :reason, timeout = :timeout WHERE name = :username",
-                                                {'kick':"kick",
-                                                'reason':reason,
-                                                'timeout':timeout,
-                                                'username':username})
                 client.state = 'kick'
                 client.send(json.dumps({'type': 'kick',
                                         'timeout': timeout.strftime("%Y-%m-%d %H:%M:%S"),
@@ -172,18 +179,25 @@ class Server:
             timeout ('datetime'): Date and time when the ip can join the server again.
             reason (str): The reason for kicking the ip.
         """
+        clients = self.database.fetch_all("SELECT ip, state FROM users WHERE ip = :ip",
+                                          {'ip': ip})
+        if not clients:
+            print(f"No user with IP {ip} exists.")
+            return
+        self.database.execute_sql_query("UPDATE users SET state = :kick, reason = :reason, timeout = :timeout WHERE ip = :ip",
+                                        {'kick':"kick_ip",
+                                         'reason':ip + ":" + reason,
+                                         'timeout':timeout,
+                                         'ip':ip})
+
+        # Check if the user is currently connected
         for client in self.clients:
             if client.ip[0] == ip:
-                self.database.execute_sql_query("UPDATE users SET state = :kick, reason = :reason, timeout = :timeout WHERE ip = :ip",
-                                      {'kick':"kick_ip",
-                                      'reason':ip + ":" + reason,
-                                      'timeout':timeout,
-                                      'ip':ip})
                 client.state = 'kick_ip'
                 client.send(json.dumps({'type': 'kick_ip',
                                         'timeout': timeout.strftime("%Y-%m-%d %H:%M:%S"),
                                         'reason': reason}))
-                
+
     def unkick_ip(self, ip:str):
         """
         Unkick an IP address from the server.
@@ -191,16 +205,18 @@ class Server:
         Args:
             ip (str): The IP address.
         """
-        for client in self.clients:
-            result = self.database.fetch_user_state(client.name)
-            if result == "kick_ip":
-                if client.reason.split(":")[0] == ip:
-                    self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason, timeout = :timeout",
-                                          {'state': 'valid',
-                                          'reason': None,
-                                          'timeout': None})
-                    client.state = 'valid'
-                    client.send(json.dumps({'type': 'unkick_ip'}))
+        clients = self.database.fetch_all("SELECT ip, state FROM users WHERE ip = :ip AND state = :state",
+                                        {'ip': ip,
+                                         'state': 'kick_ip'})
+        if not clients:
+            print(f"IP {ip} is not kicked.")
+            return
+        self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason, timeout = :timeout WHERE ip = :ip",
+                                        {'state': 'valid',
+                                         'reason': None,
+                                         'timeout': None,
+                                         'ip': ip})
+        print(f"IP {ip} has been unkicked.")
     
     def unkick_user(self, username:str):
         """
@@ -209,16 +225,17 @@ class Server:
         Args:
             username (str): The username.
         """
-        for client in self.clients:
-            if client.name == username:
-                self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason, timeout = :timeout WHERE name = :username",
-                                      {'state': 'valid',
-                                      'reason': None,
-                                      'timeout': None,
-                                      'username': username})
-                client.state = 'valid'
-                client.send(json.dumps({'type': 'unkick'}))
-                break
+        user = self.database.fetch_one("SELECT name, state FROM users WHERE name = :username AND state = :state",
+                                    {'username': username, 'state': 'kick'})
+        if user is None:
+            print(f"User {username} is not kicked.")
+            return
+        self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason, timeout = :timeout WHERE name = :username",
+                                        {'state': 'valid',
+                                         'reason': None,
+                                         'timeout': None,
+                                         'username': username})
+        print(f"User {username} has been unkicked.")
     
     def ban_user(self, username:str, reason:str):
         """
@@ -237,6 +254,15 @@ class Server:
                                         {'state': 'ban',
                                         'reason': reason,
                                         'username': username})
+        
+        # Check if the user is currently connected
+        for cl in self.clients:
+            if cl.name == username:
+                cl.state = 'ban'
+                cl.send(json.dumps({'type': 'ban',
+                                    'reason': reason}))
+                break
+
         print(f"User {username} has been banned for reason: {reason}")
 
     def ban_ip(self, ip:str, reason:str):
@@ -247,14 +273,23 @@ class Server:
             ip (str): The IP address.
             reason (str): The reason for banning the ip.
         """
+        client = self.database.fetch_one("SELECT ip, state FROM users WHERE ip = :ip",
+                                         {'ip': ip})
+        if client is None:
+            print(f"No user with IP {ip} exists.")
+            return
+        self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason WHERE ip = :ip",
+                                        {'state': 'ban_ip',
+                                         'reason': ip + ":" + reason,
+                                         'ip': ip})
+
+        # Check if the user is currently connected
         for client in self.clients:
             if client.ip[0] == ip:
-                self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason WHERE ip = :ip",
-                                      {'state': 'ban_ip',
-                                      'reason': ip + ":" + reason})
                 client.state = 'ban_ip'
-                client.send(json.dumps({'type': 'ban_ip',
-                                        'reason': reason}))
+                client.send(json.dumps({'type': 'ban_ip', 'reason': reason}))
+
+        print(f"IP {ip} has been banned for reason: {reason}")
                 
     def unban_ip(self, ip:str):
         """
@@ -263,15 +298,17 @@ class Server:
         Args:
             ip (str): The IP address.
         """
-        for client in self.clients:
-            result = self.database.fetch_user_state(client.name)
-            if result == "ban_ip":
-                if client.reason.split(":")[0] == ip:
-                    self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason",
-                                          {'state': 'valid',
-                                          'reason': None})
-                    client.state = 'valid'
-                    client.send(json.dumps({'type': 'unban_ip'}))
+        clients = self.database.fetch_all("SELECT ip, state FROM users WHERE ip = :ip AND state = :state",
+                                        {'ip': ip, 'state': 'ban_ip'})
+        if not clients:
+            print(f"No user with IP {ip} is banned.")
+            return
+        for client in clients:
+            self.database.execute_sql_query("UPDATE users SET state = :state, reason = :reason WHERE ip = :ip",
+                                            {'state': 'valid',
+                                            'reason': None,
+                                            'ip': ip})
+        print(f"IP {ip} has been unbanned.")
     
     def unban_user(self, username:str):
         """
@@ -292,6 +329,7 @@ class Server:
                                         {'state': 'valid',
                                         'reason': None,
                                         'username': username})
+        print(f"User {username} has been unbanned.")
     
     def kill(self, user:str, reason:str):
         """

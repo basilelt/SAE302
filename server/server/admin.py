@@ -4,7 +4,7 @@ try:
     import readline
 except ImportError:
     try:
-        import pyreadline3 as readline
+        import pyreadline3 as readline ## readline is not available on Windows by default
     except ImportError:
         print("Please install pyreadline on Windows")
 
@@ -169,7 +169,7 @@ shutdown - shutdown the server""")
         elif command == "users":
             print("Users:")
             for user in server.clients:
-                print(user.name + " " + user.ip)
+                print(user.name + " " + user.ip[0])
         
         elif command == "rooms":    
             print("Rooms:")
@@ -237,7 +237,7 @@ shutdown - shutdown the server""")
                     reason = " ".join(command.split(" ")[3:])
                     server.kick_user(username, timeout, reason)
                 except IndexError:
-                    print("Please specify a username")
+                    print("Please specify a username and a duration")
         
         elif command.startswith("unkick"):
             if command.split(" ")[1] == "ip":
@@ -245,7 +245,7 @@ shutdown - shutdown the server""")
                     ip = command.split(" ")[2]
                     server.unkick_ip(ip)
                 except IndexError:
-                    print("Please specify an IP address")
+                    print("Please specify an IP address and a duration")
             else:
                 try:
                     username = command.split(" ")[1]

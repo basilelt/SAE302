@@ -103,7 +103,6 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
                 result = server.database.fetch_one("SELECT timeout FROM users WHERE name = :name",
                                                    {'name':user})
                 timeout = result[0] if result else None
-                
                 if datetime.datetime.now() > timeout:
                     ## If timeout has expired, unkick the user
                     server.database.execute_sql_query("UPDATE users SET state = 'valid' WHERE name = :name",
@@ -115,17 +114,18 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
                                            'rooms': client.rooms,})
                     client.login = True
                     client.send(response)
+                else:
+                    ## If timeout has not expired, send a kick status response
+                    result = server.database.fetch_one("SELECT reason FROM users WHERE name = :name",
+                                                    {'name':user})
+                    reason = result[0] if result else None
 
-                result = server.database.fetch_one("SELECT reason FROM users WHERE name = :name",
-                                                   {'name':user})
-                reason = result[0] if result else None
-
-                response = json.dumps({'type': 'signin',
-                                       'status': 'kick',
-                                       'timeout': timeout,
-                                       'reason': reason})
-                client.send(response)
-                client.close(clients)
+                    response = json.dumps({'type': 'signin',
+                                        'status': 'kick',
+                                        'timeout': timeout.strftime("%Y-%m-%d %H:%M:%S"),
+                                        'reason': reason})
+                    client.send(response)
+                    client.close(clients)
                                      
             elif client.state == "ban" or client.state == "ban_ip":
                 ## Banned user
