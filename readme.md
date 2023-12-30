@@ -94,8 +94,7 @@ shutdown - shutdown the server
 ## Contributing
 
 Here is the structure of the project:
-```bash
-
+```
 client
 ├── backend
 │   ├── client.py -> client class
@@ -125,7 +124,7 @@ server
 Here is the structure of the database:
 ![dbdiagram](https://github.com/basilelt/SAE302/blob/main/docs/sql/dbdiagram.png?raw=true)
 
-You can also find a docstring sphinx for the [client](https://yourusername.github.io/yourrepository/client.html) and the [server](https://yourusername.github.io/yourrepository/server.html).
+You can also find a docstring sphinx for the [client](https://basilelt.github.io/SAE302/client/) and the [server](https://basilelt.github.io/SAE302/server/).
 
 ## Notes
 This chat server shouldn't be used outside of a local trusted network as the data traffic isn't encrypted:
