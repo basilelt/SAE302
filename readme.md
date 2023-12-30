@@ -136,3 +136,5 @@ This chat server shouldn't be used outside of a local trusted network as the dat
 Messages can't be sent to users not connected to the server.
 
 Even if all messages are stored on the server those aren't served when a client connect, meaning the history of a room isn't readable by clients.
+
+**Bugs can be encountered when unexpected operations are made on the server or clients** 
