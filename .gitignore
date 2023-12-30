@@ -4,4 +4,3 @@
 **/*.log
 **/__pycache__
 **/.VSCodeCounter
-**/directory.py

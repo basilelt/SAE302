@@ -84,12 +84,17 @@ SAE302
 Here is the structure of the database:
 ![dbdiagram](https://github.com/basilelt/SAE302/blob/main/docs/sql/dbdiagram.png?raw=true)
 
-You can also find a docstring sphinx here
+You can also find a docstring sphinx for the client and the server.
 
 ## Notes
 This chat server shouldn't be used outside of a local trusted network as the data traffic isn't encrypted:
+
 *messages are sent in clear
+
 *passwords are sent in clear
+
 *messages could be forged
 
-Messages can't be sent to users not connected to the server. Even if all messages are stored on the server those aren't served when a client connect, meaning the history of a room isn't readable by clients.
+
+Messages can't be sent to users not connected to the server.
+Even if all messages are stored on the server those aren't served when a client connect, meaning the history of a room isn't readable by clients.
