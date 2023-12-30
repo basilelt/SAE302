@@ -376,7 +376,7 @@ class LoginWindow(QMainWindow):
 
             self.client.connect(register=True)
         except Exception as err:
-            print(err)    
+            logging.error(f"Failed to register: {err}")
 
     def handle_disconnection(self):
         """

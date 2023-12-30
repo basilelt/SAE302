@@ -25,6 +25,7 @@ def handle_signup_message(client:'Client', message:dict):
         reason = message['reason']
 
         ## Emit an error received signal from the client with the error and the reason
+        logging.error(f'Signup error: {error}, reason: {reason}')
         client.error_received.emit(error, reason)
     
 def handle_signin_message(client:'Client', message:dict):
@@ -51,6 +52,7 @@ def handle_signin_message(client:'Client', message:dict):
         reason = message['reason']
 
         ## Emit an error received signal from the client with the error and the reason
+        logging.error(f'Signin error: {error}, reason: {reason}')
         client.error_received.emit(error, reason)
     ## If the status of the message is "kick"
     elif message['status'] == "kick":
@@ -60,6 +62,7 @@ def handle_signin_message(client:'Client', message:dict):
         reason = message['reason']
 
         ## Emit an error received signal from the client with the error and the reason concatenated with the timeout
+        logging.error(f'Kick error: {error}, timeout: {timeout}, reason: {reason}')
         client.error_received.emit(error, reason + "\n" + timeout)
     ## If the status of the message is "ban"
     elif message['status'] == "ban":
@@ -68,6 +71,7 @@ def handle_signin_message(client:'Client', message:dict):
         reason = message['reason']
 
         ## Emit an error received signal from the client with the error and the reason
+        logging.error(f'Ban error: {error}, reason: {reason}')
         client.error_received.emit(error, reason)
     
 def handle_kill_message(client:'Client', message:dict):
@@ -99,6 +103,7 @@ def handle_kick_message(client:'Client', message:dict):
     reason = message['reason']
 
     ## Emit an error received signal from the client with the error and the reason concatenated with the timeout
+    logging.error(f'Kick message: {error}, timeout: {timeout}, reason: {reason}')
     client.error_received.emit(error, reason + "\n" + timeout)
 
     ## Close the client connection
@@ -120,6 +125,7 @@ def handle_ban_message(client:'Client', message:dict):
     reason = message['reason']
 
     ## Emit an error received signal from the client with the error and the reason
+    logging.error(f'Ban message: {error}, reason: {reason}')
     client.error_received.emit(error, reason)
 
     ## Close the client connection
@@ -153,6 +159,7 @@ def handle_pending_room_message(client:'Client', message:dict):
         reason = message['reason']
 
         ## Emit an error received signal from the client with the status and the reason
+        logging.error(f'Pending room error: {status}, reason: {reason}')
         client.error_received.emit(status, reason)
 
 def handle_public_message(client:'Client', message:dict):
@@ -204,6 +211,7 @@ def handle_private_message(client:'Client', message:dict):
         reason = message['reason']
 
         ## Emit an error received signal from the client with the error message and the reason
+        logging.error(f"Error sending private: {reason}")
         client.error_received.emit(f"Error sending private", reason)
 
 def handle_disconnect_message(client:'Client', message:dict):
@@ -217,6 +225,5 @@ def handle_disconnect_message(client:'Client', message:dict):
     """
     ## If the status of the message is 'ok'
     if message['status'] == "ok":
-        ## Log an info message
         logging.info("Disconnected")
         

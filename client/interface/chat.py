@@ -7,6 +7,7 @@ if TYPE_CHECKING:
 from PyQt6.QtWidgets import QMainWindow, QSplitter, QListWidget, QWidget, QGridLayout, QLabel, QCheckBox, QPushButton, QTextBrowser, QLineEdit, QListWidgetItem, QStackedLayout
 from PyQt6.QtGui import QPixmap, QPainter, QBrush, QColor
 from PyQt6.QtCore import Qt, QSize, pyqtSlot
+import logging
 
 class ChatWindow(QMainWindow):
     """
@@ -156,7 +157,7 @@ class ChatWindow(QMainWindow):
                     for message in self.messages[title]:
                         self.textBrowser.append(message)
         else:
-            print("No widget set for item")
+            logging.warning("No widget set for item")
 
     def create_home_widget(self) -> QWidget:
         """
@@ -322,6 +323,7 @@ class ChatWindow(QMainWindow):
             self.username_input.clear()
         else:
             ## If the username is empty, emit an error message
+            logging.error('Invalid Input: Username must be filled')
             self.client.error_received.emit("Invalid Input", "Username must be filled")
 
     @pyqtSlot(str, str, str)
@@ -358,5 +360,6 @@ class ChatWindow(QMainWindow):
         :type event: QCloseEvent
         """
         ## Close the client connection and accept the event
+        logging.info("Closing client connection")
         self.client.close()
         event.accept()

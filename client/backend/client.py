@@ -69,6 +69,7 @@ class Client(QObject):
             self.__socket_tcp.connect((self.server, self.port))
         except ConnectionRefusedError:
             ## If the connection is refused, emit an error message and return
+            logging.error('ConnectionRefusedError: The server is unreachable.')
             self.error_received.emit("ConnectionRefusedError", "The server is unreachable.")
             return
 
@@ -101,12 +102,12 @@ class Client(QObject):
 
                 ## If data was received
                 if data:
+                    logging.info('Data received from server.')
                     try:
                         ## Try to parse the data as JSON
                         message = json.loads(data)
 
-                        ## Print the message and handle it
-                        print(message)
+                        ## Handle the message
                         handle_message(self, message)
                     except json.JSONDecodeError:
                         ## If the data is not valid JSON, log an error
@@ -223,6 +224,7 @@ class Client(QObject):
             self.__socket_tcp.send(json.dumps({'type':'disconnect'}).encode())
         except OSError:
             ## If the socket is not connected, pass
+            logging.error("Socket is not connected")
             pass
 
         ## If a listening thread exists, wait for it to finish
@@ -230,4 +232,5 @@ class Client(QObject):
             self.thread_listen.join()
 
         ## Close the socket
+        logging.info('Connection to server closed.')
         self.__socket_tcp.close()
