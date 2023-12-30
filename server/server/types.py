@@ -1,6 +1,7 @@
 import json
 import datetime
 import bcrypt
+import logging
 
 ## Import the types for documentation purposes
 from typing import TYPE_CHECKING
@@ -12,10 +13,15 @@ def handle_signup_message(message:dict, client:'Client', _:list, server:'Server'
     """
     Handle signup message from the client.
 
-    Args:
-        message (dict): The signup message.
-        client ('Client'): The client.
-        server ('Server'): The server.
+    :param message: The signup message.
+    :type message: dict
+    :param client: The client.
+    :type client: 'Client'
+    :param _: Unused parameter.
+    :type _: list
+    :param server: The server.
+    :type server: 'Server'
+    :raises Exception: If there is an error during signup
     """
     user = message['username']
     password = message['password'].encode('utf-8')
@@ -38,16 +44,16 @@ def handle_signup_message(message:dict, client:'Client', _:list, server:'Server'
             client.login = True
             client.state = "valid"
             client.addroom(server, "Général")
-            response = json.dumps({'type': 'signup',
-                                   'status': 'ok'})
+            response = json.dumps({'type':'signup',
+                                   'status':'ok'})
         except Exception as e:
-            response = json.dumps({'type': 'signup',
-                                   'status': 'error',
-                                   'reason': str(e)})
+            response = json.dumps({'type':'signup',
+                                   'status':'error',
+                                   'reason':str(e)})
     else:
-        response = json.dumps({'type': 'signup',
-                               'status': 'error',
-                               'reason': 'username_already_used'})
+        response = json.dumps({'type':'signup',
+                               'status':'error',
+                               'reason':'username_already_used'})
 
     client.send(response)
 
@@ -57,10 +63,15 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
     """
     Handle signin message from the client.
 
-    Args:
-        message (dict): The signin message.
-        client ('Client'): The client.
-        server ('Server'): The server.
+    :param message: The signin message.
+    :type message: dict
+    :param client: The client.
+    :type client: 'Client'
+    :param clients: List of all clients.
+    :type clients: list
+    :param server: The server.
+    :type server: 'Server'
+    :raises Exception: If there is an error during signin
     """
     user = message['username']
     password = message['password'].encode('utf-8')
@@ -70,9 +81,9 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
 
         if not bcrypt.checkpw(password, hashed_password): 
             ## Incorrect password
-            response = json.dumps({'type': 'signin',
-                                   'status': 'error',
-                                   'reason': 'incorrect_password'})
+            response = json.dumps({'type':'signin',
+                                   'status':'error',
+                                   'reason':'incorrect_password'})
             client.send(response)
         else:
             client.name = user
@@ -82,7 +93,7 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
                                                'name':user})
                      
             result = server.database.fetch_all("SELECT room FROM belong WHERE user = :name",
-                                               {'name': user})
+                                               {'name':user})
             client.rooms = [row[0] for row in result] if result else []
 
             result = server.database.fetch_all("SELECT pending_rooms FROM users WHERE users.name = :name",
@@ -92,10 +103,10 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
              
             if client.state == "valid":
                 ## Valid user
-                response = json.dumps({'type': 'signin',
-                                       'status': 'ok',
-                                       'all_rooms': server.database.get_rooms(),
-                                       'rooms': client.rooms,})
+                response = json.dumps({'type':'signin',
+                                       'status':'ok',
+                                       'all_rooms':server.database.get_rooms(),
+                                       'rooms':client.rooms,})
                 client.login = True
                 client.send(response)
                                   
@@ -109,10 +120,10 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
                     server.database.execute_sql_query("UPDATE users SET state = 'valid' WHERE name = :name",
                                                       {'name':user})
                     client.state = "valid"
-                    response = json.dumps({'type': 'signin',
-                                           'status': 'ok',
-                                           'all_rooms': server.database.get_rooms(),
-                                           'rooms': client.rooms,})
+                    response = json.dumps({'type':'signin',
+                                           'status':'ok',
+                                           'all_rooms':server.database.get_rooms(),
+                                           'rooms':client.rooms,})
                     client.login = True
                     client.send(response)
                 else:
@@ -121,10 +132,10 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
                                                     {'name':user})
                     reason = result[0] if result else None
 
-                    response = json.dumps({'type': 'signin',
-                                        'status': 'kick',
-                                        'timeout': timeout.strftime("%Y-%m-%d %H:%M:%S"),
-                                        'reason': reason})
+                    response = json.dumps({'type':'signin',
+                                        'status':'kick',
+                                        'timeout':timeout.strftime("%Y-%m-%d %H:%M:%S"),
+                                        'reason':reason})
                     client.send(response)
                     client.close(clients)
                                      
@@ -134,9 +145,9 @@ def handle_signin_message(message:dict, client:'Client', clients:list, server:'S
                                                    {'name':user})
                 reason = result[0] if result else None
 
-                response = json.dumps({'type': 'signin',
-                                       'status': 'ban',
-                                       'reason': reason})
+                response = json.dumps({'type':'signin',
+                                       'status':'ban',
+                                       'reason':reason})
                 client.send(response)
                 client.close(clients)
     
@@ -153,9 +164,12 @@ def handle_disconnect_message(_1:dict, client:'Client', clients:list, _2:'Server
     """
     Handle disconnect message from the client.
 
-    Args:
-        client ('Client'): The client.
-        clients (list): The list of all clients.
+    :param client: The client.
+    :type client: 'Client'
+    :param clients: The list of all clients.
+    :type clients: list
+    :raises ValueError: If the client is not in the list
+    :raises Exception: If there is an unexpected error
     """
     try:
         ## Close the client connection and remove it from the list of clients
@@ -165,10 +179,10 @@ def handle_disconnect_message(_1:dict, client:'Client', clients:list, _2:'Server
         client.close(clients)
     except ValueError:
         ## Handle the case where the client is not in the list
-        print(f"Failed to remove client {client.name} from the list.")
+        logging.error(f"Failed to remove client {client.name} from the list.")
     except Exception as e:
         ## Handle any other unexpected errors
-        print(f"Unexpected error: {e}")
+        logging.error(f"Unexpected error: {e}")
 
 ################################################################################################################
 
@@ -176,27 +190,32 @@ def handle_pending_room_message(message:dict, client:'Client', _:list, server:'S
     """
     Handle pending room message from the client.
 
-    Args:
-        message (dict): The pending room message.
-        client ('Client'): The client.
-        server ('Server'): The server.
+    :param message: The pending room message.
+    :type message: dict
+    :param client: The client.
+    :type client: 'Client'
+    :param _: Unused parameter.
+    :type _: list
+    :param server: The server.
+    :type server: 'Server'
+    :raises Exception: If there is an error during handling the pending room message
     """
     if client.login:
         room = message['room']
 
         if not server.database.room_exists(room):
             ## Room doesn't exist
-            response = json.dumps({'type': 'pending_room',
-                                   'status': 'error',
-                                   'reason': 'room_does_not_exist'})
+            response = json.dumps({'type':'pending_room',
+                                   'status':'error',
+                                   'reason':'room_does_not_exist'})
         elif room not in client.rooms and room is not None:
             if room == "Blabla":
                 client.addroom(server, room)
             else:
                 client.pending_rooms.append(room)
                 server.database.execute_sql_query("UPDATE users SET pending_rooms = :pending_rooms WHERE name = :name",
-                                                {'pending_rooms':','.join(client.pending_rooms),
-                                                'name':client.name,})
+                                                  {'pending_rooms':','.join(client.pending_rooms),
+                                                   'name':client.name,})
                 response = None
             
         else:
@@ -221,19 +240,23 @@ def handle_public_message(message:dict, client:'Client', clients:list, server:'S
     """
     Handle public message from the client.
 
-    Args:
-        message (dict): The public message.
-        clients (list): The list of all clients.
-        client ('Client'): The client.
-        server ('Server'): The server.
+    :param message: The public message.
+    :type message: dict
+    :param client: The client.
+    :type client: 'Client'
+    :param clients: The list of all clients.
+    :type clients: list
+    :param server: The server.
+    :type server: 'Server'
+    :raises Exception: If there is an error during handling the public message
     """
     if client.login:
         ## Check if the client is valid
         if client.state != "valid":
             ## If not, send an error response
-            response = json.dumps({'type': 'public',
-                                'status': 'error',
-                                'reason': 'not_valid_sender'})
+            response = json.dumps({'type':'public',
+                                   'status':'error',
+                                   'reason':'not_valid_sender'})
             client.send(response)
         else:
             ## If valid, extract message details and insert into the database
@@ -243,25 +266,25 @@ def handle_public_message(message:dict, client:'Client', clients:list, server:'S
 
             try:
                 server.database.insert_message(client.name, room, date_message, message_text)
-                response = json.dumps({'type': 'public',
-                                       'room': room,
-                                       'user': client.name,
-                                       'message': message_text})
+                response = json.dumps({'type':'public',
+                                       'room':room,
+                                       'user':client.name,
+                                       'message':message_text})
                 ## Send the message to all valid clients in the room
                 for cl in clients:
                     if room in cl.rooms and cl.state == "valid":
                         cl.send(response)
             except Exception as e:
                 ## Handle any errors during message insertion
-                response = json.dumps({'type': 'public',
-                                       'status': 'error',
-                                       'reason': str(e)})
+                response = json.dumps({'type':'public',
+                                       'status':'error',
+                                       'reason':str(e)})
                 client.send(response)
     else:
         ## If client is not logged in, send an error response
-        response = json.dumps({'type': 'public',
-                               'status': 'error',
-                               'reason': 'not_logged_in'})
+        response = json.dumps({'type':'public',
+                               'status':'error',
+                               'reason':'not_logged_in'})
         client.send(response)
 
 ################################################################################################################
@@ -270,11 +293,15 @@ def handle_private_message(message:dict, client:'Client', clients:list, server:'
     """
     Handle private message from the client.
 
-    Args:
-        message (dict): The private message.
-        clients (list): The list of all clients.
-        client ('Client'): The client.
-        server ('Server'): The server.
+    :param message: The private message.
+    :type message: dict
+    :param client: The client.
+    :type client: 'Client'
+    :param clients: The list of all clients.
+    :type clients: list
+    :param server: The server.
+    :type server: 'Server'
+    :raises Exception: If there is an error during handling the private message
     """
     if client.login:
         ## Find the recipient client
@@ -288,45 +315,42 @@ def handle_private_message(message:dict, client:'Client', clients:list, server:'
         if to_user is not None:
             ## Check if sender is valid
             if client.state != "valid":
-                response = json.dumps({'type': 'private',
-                                       'status': 'error',
-                                       'reason': 'not_valid_sender'})
+                response = json.dumps({'type':'private',
+                                       'status':'error',
+                                       'reason':'not_valid_sender'})
                 client.send(response)
             else:
-                ## Extract message details
-                message_text = message['message']
-                date_message = datetime.datetime.now()
                 room = ''.join(sorted([client.name, to_user.name]))
 
                 ## If room doesn't exist, create it
                 if not server.database.room_exists(room):
                     try:
                         server.database.execute_sql_query("INSERT INTO rooms (name, type) VALUES (:name, :type)",
-                                                          {'name': room,
-                                                           'type': 'private'})
+                                                          {'name':room,
+                                                           'type':'private'})
                         client.addroom(server, room)
                         to_user.addroom(server, room)
                     except Exception as e:
-                        response = json.dumps({'type': 'private',
-                                               'status': 'error',
-                                               'reason': str(e)})
+                        response = json.dumps({'type':'private',
+                                               'status':'error',
+                                               'reason':str(e)})
                         client.send(response)
                         return
                     
                 ## Send a success response
-                response = json.dumps({'type': 'private',
-                                       'status': 'ok'})
+                response = json.dumps({'type':'private',
+                                       'status':'ok'})
                 client.send(response)
 
         else:
             ## If recipient not found, send an error response
-            response = json.dumps({'type': 'private',
-                                   'status': 'error',
-                                   'reason': 'recipient_not_found'})
+            response = json.dumps({'type':'private',
+                                   'status':'error',
+                                   'reason':'recipient_not_found'})
             client.send(response)
     else:
         ## If sender is not logged in, send an error response
-        response = json.dumps({'type': 'private',
-                               'status': 'error',
-                               'reason': 'not_logged_in'})
+        response = json.dumps({'type':'private',
+                               'status':'error',
+                               'reason':'not_logged_in'})
         client.send(response)

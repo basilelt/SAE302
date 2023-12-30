@@ -12,10 +12,9 @@ def handler(client:'Client', clients:list, server:'Server'):
     """
     Handle client messages.
 
-    Args:
-        client ('Client'): The client.
-        clients (list): The list of clients.
-        server ('Server'): The server.
+    :param Client client: The client.
+    :param list clients: The list of clients.
+    :param Server server: The server.
     """
     while not server.stop_clients:
         try:
@@ -24,7 +23,6 @@ def handler(client:'Client', clients:list, server:'Server'):
             if data:
                 try:
                     message = json.loads(data)
-                    print(message)
                     handle_message(message, client, clients, server)
                 except json.JSONDecodeError:
                     logging.error("Failed to decode JSON")
@@ -42,20 +40,17 @@ def handle_message(message:dict, client:'Client', clients:list, server:'Server')
     """
     Handle a specific type of message.
 
-    Args:
-        message (dict): The message.
-        client ('Client'): The client.
-        clients (list): The list of clients.
-        server ('Server'): The server.
+    :param dict message: The message.
+    :param Client client: The client.
+    :param list clients: The list of clients.
+    :param Server server: The server.
     """
-    message_handlers = {
-        'signup': handle_signup_message,
-        'signin': handle_signin_message,
-        'disconnect': handle_disconnect_message,
-        'pending_room': handle_pending_room_message,
-        'public': handle_public_message,
-        'private': handle_private_message
-    }
+    message_handlers = {'signup':handle_signup_message,
+                        'signin':handle_signin_message,
+                        'disconnect':handle_disconnect_message,
+                        'pending_room':handle_pending_room_message,
+                        'public':handle_public_message,
+                        'private':handle_private_message}
 
     ## Call the corresponding handler
     handler_message = message_handlers.get(message['type'])

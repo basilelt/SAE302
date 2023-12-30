@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.pool import QueuePool
+import logging
 
 class DatabaseConnection:
     """
@@ -34,7 +35,6 @@ class DatabaseConnection:
     insert_message(user, room, date_message, body):
         Inserts a message into the database.
     """
-
     def __init__(self):
         """Initializes the DatabaseConnection object with a None engine."""
         self.engine = None
@@ -44,7 +44,7 @@ class DatabaseConnection:
         try:
             self.engine = create_engine("mysql+pymysql://chat:chat@localhost/chat", poolclass=QueuePool)
         except SQLAlchemyError as e:
-            print(f"Error connecting to database: {e}")
+            logging.error(f"Error connecting to database: {e}")
 
     def execute_sql_query(self, query, params=None):
         """Executes a SQL query with optional parameters."""
@@ -54,7 +54,7 @@ class DatabaseConnection:
                 connection.commit()
                 return result
         except SQLAlchemyError as e:
-            print(f"Error executing query: {e}")
+            logging.error(f"Error executing query: {e}")
 
     def fetch_one(self, query, params=None):
         """Executes a SQL query and fetches one record."""

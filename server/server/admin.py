@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import logging
 
 try:
     import readline
@@ -6,6 +7,7 @@ except ImportError:
     try:
         import pyreadline3 as readline ## readline is not available on Windows by default
     except ImportError:
+        logging.error("Failed to import readline, please install it")
         print("Please install pyreadline on Windows")
 
 ## Import the types for documentation purposes
@@ -17,8 +19,10 @@ def convert_to_date(time_str:str) -> datetime:
     """
     Convert a string to a datetime object with a delta.
 
-    Args:
-        time_str (str): The string to convert.
+    :param str time_str: The string to convert.
+    :return: The datetime object.
+    :rtype: datetime
+    :raises ValueError: If the time unit is not 's', 'm', 'h', 'd', or 'y'.
     """
     number = int(time_str[:-1])
     unit = time_str[-1]
@@ -38,10 +42,12 @@ def convert_to_date(time_str:str) -> datetime:
 
 def convert_to_date_minus(time_str:str) -> datetime:
     """
-    Convert a string to a datetime object with a delta.
+    Convert a string to a datetime object with a delta subtracted from the current time.
 
-    Args:
-        time_str (str): The string to convert.
+    :param str time_str: The string to convert.
+    :return: The datetime object.
+    :rtype: datetime
+    :raises ValueError: If the time unit is not 's', 'm', 'h', 'd', or 'y'.
     """
     number = int(time_str[:-1])
     unit = time_str[-1]
@@ -59,15 +65,13 @@ def convert_to_date_minus(time_str:str) -> datetime:
     else:
         raise ValueError("Invalid time unit. Use 's' for seconds, 'm' for minutes, 'h' for hours, 'd' for days, or 'y' for years.")
 
-
 ################################################################################################################
 
 def admin_console(server:'Server'):
     """
     Display the admin console.
 
-    Args:
-        server ('Server'): The server.
+    :param Server server: The server.
     """
     print("Admin console")
     print("Type 'help' for a list of commands.")
@@ -76,11 +80,9 @@ def create_completer(server:'Server') -> 'function':
     """
     Creates a function that can be used as a completer for readline.
 
-    Args:
-        server (Server): The server instance. Used to get the list of clients for user-specific commands.
-
-    Returns:
-        function: A function that takes the current text and a state and returns the next matching command.
+    :param Server server: The server instance. Used to get the list of clients for user-specific commands.
+    :return: A function that takes the current text and a state and returns the next matching command.
+    :rtype: function
     """
     base_commands = ["help", "messages", "users", "rooms", "add room", "pending rooms", "accept pending", "kick", "unkick", "ban", "unban", "kill", "shutdown"]
     user_commands = [f"{command} {user.name}" for command in ["kick", "unkick", "ban", "unban", "pending rooms", "accept pending"] for user in server.clients]
@@ -90,12 +92,10 @@ def create_completer(server:'Server') -> 'function':
         """
         Returns the next matching command.
 
-        Args:
-            text (str): The current text.
-            state (int): The state.
-
-        Returns:
-            str or None: The next matching command.
+        :param str text: The current text.
+        :param int state: The state.
+        :return: The next matching command.
+        :rtype: str or None
         """
         line = readline.get_line_buffer().split()
         if not line:
@@ -121,8 +121,7 @@ def admin_cmd(server:'Server'):
     """
     Admin commands to manage the server.
 
-    Args:
-        server ('Server'): The server.
+    :param Server server: The server.
     """
     readline.parse_and_bind("tab: complete")
     readline.set_completer(create_completer(server))

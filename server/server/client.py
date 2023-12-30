@@ -7,32 +7,29 @@ from .message_handler import handler
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .server import Server
+    import socket
 
 class Client:
     """
     The Client class represents a client connected to the server.
 
-    Attributes:
-        conn (socket.socket): The client's socket connection.
-        address (str): The client's address.
-        name (str): The client's name.
-        state (bool): The client's state.
-        _rooms (list): The rooms the client is in.
+    :ivar socket.socket conn: The client's socket connection.
+    :ivar str address: The client's address.
+    :ivar str name: The client's name.
+    :ivar bool state: The client's state.
+    :ivar list _rooms: The rooms the client is in.
     """
-
-    def __init__(self, conn, address, host, port, clients, server):
+    def __init__(self, conn:'socket.socket', address:str, host:str, port:int, clients:list, server:'Server'):
         """
         Initialize the Client with connection, address, host, port, clients list, and server.
 
-        Args:
-            conn (socket.socket): The client's socket connection.
-            address (str): The client's ip address.
-            host (str): The host address.
-            port (int): The port number.
-            clients (list): The list of clients.
-            server (Server): The server.
+        :param 'socket.socket' conn: The client's socket connection.
+        :param str address: The client's IP address.
+        :param str host: The host address.
+        :param int port: The port number.
+        :param list clients: The list of clients.
+        :param 'Server' server: The server.
         """
-
         logging.info("Initializing client")
         self.conn = conn
         self.ip = address
@@ -55,17 +52,20 @@ class Client:
 
     @property
     def rooms(self) -> list:
+        """
+        Get the rooms the client is in.
+
+        :return: The rooms the client is in.
+        :rtype: list
+        """
         return self._rooms
     @rooms.setter
     def rooms(self, rooms:str or list):
         """
         Set the rooms the client is in. If rooms is a string, it is converted to a list.
 
-        Args:
-            rooms (list or str): The rooms the client is in.
-
-        Raises:
-            TypeError: If rooms is not a list or a string.
+        :param list or str rooms: The rooms the client is in.
+        :raises TypeError: If rooms is not a list or a string.
         """
         if isinstance(rooms, str):
             rooms = [rooms]
@@ -79,8 +79,8 @@ class Client:
         """
         Receive data from the client.
 
-        Returns:
-            str: The received data.
+        :return: The received data.
+        :rtype: str
         """
         return self.conn.recv(1024).decode()
 
@@ -88,14 +88,15 @@ class Client:
         """
         Send data to the client.
 
-        Args:
-            data (str): The data to send.
+        :param str data: The data to send.
         """
         self.conn.send(data.encode())
 
     def close(self, clients:list):
         """
         Close the client's connection.
+
+        :param list clients: The list of clients.
         """
         logging.info("Closing client")
         
@@ -108,20 +109,19 @@ class Client:
         """
         Add a room to the client's rooms list from the pending list.
 
-        Args:
-            server (Server): The server.
-            room (str): The room to add.
+        :param Server server: The server.
+        :param str room: The room to add.
         """
         if room in self.pending_rooms:
             self.pending_rooms.remove(room)
             server.database.execute_sql_query("UPDATE users SET pending_rooms = :pending_rooms WHERE name = :name",
-                                            {'pending_rooms': ','.join(self.pending_rooms),
-                                            'name': self.name})
+                                              {'pending_rooms':','.join(self.pending_rooms),
+                                               'name':self.name})
         self.rooms.append(room)
         server.database.execute_sql_query("INSERT INTO belong (user, room) VALUES (:user, :room)",
-                                        {'user': self.name,
-                                        'room': room})
+                                          {'user':self.name,
+                                           'room':room})
         
-        self.send(json.dumps({'type': 'pending_room',
-                              'status': 'ok',
-                              'room': room}))
+        self.send(json.dumps({'type':'pending_room',
+                              'status':'ok',
+                              'room':room}))

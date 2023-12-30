@@ -10,9 +10,10 @@ def handle_message(client:'Client', message:dict):
     """
     Handle a specific type of message.
 
-    Args:
-        client ('Client'): The client.
-        message (dict): The message.
+    :param client: The client.
+    :type client: Client
+    :param message: The message.
+    :type message: dict
     """
     message_handlers = {
         'signup': handle_signup_message,

@@ -8,7 +8,11 @@ from server.admin import admin_console, admin_cmd
 def main():
     """
     Main function to start the chat server.
-    Parses command line arguments for host and port, validates them, and starts the server.
+
+    This function parses command line arguments for host and port, validates them, and starts the server.
+
+    :raises KeyboardInterrupt: If the server is interrupted by keyboard input
+    :raises Exception: If there is an error starting the server
     """
 
     ## Configure logging
