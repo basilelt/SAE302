@@ -148,6 +148,7 @@ ban <username> <reason> - ban a user
 ban ip <ip> <reason> - ban an IP address
 unban <username> - unban a user
 unban ip <ip> - unban an IP address")
+kill <username> <reason> - kill a user
 
 shutdown - shutdown the server""")
 
