@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Backend Module &#8212; SAE302  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Interface Module" href="interface.html" />
+    <link rel="prev" title="Welcome to SAE302’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-backend.client">
+<span id="backend-module"></span><h1>Backend Module<a class="headerlink" href="#module-backend.client" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="backend.client.Client">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">backend.client.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.client.Client" title="Link to this definition">¶</a></dt>
+<dd><p>A QObject subclass that represents the client in the chat application.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The username of the client.</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – The password of the client.</p></li>
+<li><p><strong>server</strong> (<em>str</em>) – The server that the client will connect to.</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – The port that the client will connect to.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.client.Client.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#backend.client.Client.close" title="Link to this definition">¶</a></dt>
+<dd><p>Close the connection to the server.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.client.Client.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">register</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.client.Client.connect" title="Link to this definition">¶</a></dt>
+<dd><p>Connect the client to the server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>register</strong> (<em>bool</em>) – Whether to register a new account or not.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.client.Client.listen">
+<span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">socket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">socket</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.client.Client.listen" title="Link to this definition">¶</a></dt>
+<dd><p>Listen for messages from the server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>socket</strong> (<em>socket.socket</em>) – The socket to listen on.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.client.Client.send_login_info">
+<span class="sig-name descname"><span class="pre">send_login_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#backend.client.Client.send_login_info" title="Link to this definition">¶</a></dt>
+<dd><p>Send login information to the server.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.client.Client.send_pending_room">
+<span class="sig-name descname"><span class="pre">send_pending_room</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">room</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.client.Client.send_pending_room" title="Link to this definition">¶</a></dt>
+<dd><p>Send a pending room to the server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>room</strong> (<em>str</em>) – The name of the room.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.client.Client.send_private_message">
+<span class="sig-name descname"><span class="pre">send_private_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.client.Client.send_private_message" title="Link to this definition">¶</a></dt>
+<dd><p>Send a private message to a user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The username of the recipient.</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – The message to send.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.client.Client.send_public_message">
+<span class="sig-name descname"><span class="pre">send_public_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">room</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.client.Client.send_public_message" title="Link to this definition">¶</a></dt>
+<dd><p>Send a public message to a room.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>room</strong> (<em>str</em>) – The name of the room.</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – The message to send.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.client.Client.send_signup_info">
+<span class="sig-name descname"><span class="pre">send_signup_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#backend.client.Client.send_signup_info" title="Link to this definition">¶</a></dt>
+<dd><p>Send signup information to the server.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function" id="module-backend.handler">
+<dt class="sig sig-object py" id="backend.handler.handle_message">
+<span class="sig-prename descclassname"><span class="pre">backend.handler.</span></span><span class="sig-name descname"><span class="pre">handle_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><span class="pre">Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.handler.handle_message" title="Link to this definition">¶</a></dt>
+<dd><p>Handle a specific type of message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><em>Client</em></a>) – The client.</p></li>
+<li><p><strong>message</strong> (<em>dict</em>) – The message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-backend.types">
+<dt class="sig sig-object py" id="backend.types.handle_ban_message">
+<span class="sig-prename descclassname"><span class="pre">backend.types.</span></span><span class="sig-name descname"><span class="pre">handle_ban_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><span class="pre">Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.types.handle_ban_message" title="Link to this definition">¶</a></dt>
+<dd><p>Handle a ban message from the client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><em>Client</em></a>) – The client.</p></li>
+<li><p><strong>message</strong> (<em>dict</em>) – The message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.types.handle_disconnect_message">
+<span class="sig-prename descclassname"><span class="pre">backend.types.</span></span><span class="sig-name descname"><span class="pre">handle_disconnect_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><span class="pre">Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.types.handle_disconnect_message" title="Link to this definition">¶</a></dt>
+<dd><p>Handle a disconnect message from the client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><em>Client</em></a>) – The client.</p></li>
+<li><p><strong>message</strong> (<em>dict</em>) – The message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.types.handle_kick_message">
+<span class="sig-prename descclassname"><span class="pre">backend.types.</span></span><span class="sig-name descname"><span class="pre">handle_kick_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><span class="pre">Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.types.handle_kick_message" title="Link to this definition">¶</a></dt>
+<dd><p>Handle a kick message from the client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><em>Client</em></a>) – The client.</p></li>
+<li><p><strong>message</strong> (<em>dict</em>) – The message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.types.handle_kill_message">
+<span class="sig-prename descclassname"><span class="pre">backend.types.</span></span><span class="sig-name descname"><span class="pre">handle_kill_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><span class="pre">Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.types.handle_kill_message" title="Link to this definition">¶</a></dt>
+<dd><p>Handle a kill message from the client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><em>Client</em></a>) – The client.</p></li>
+<li><p><strong>message</strong> (<em>dict</em>) – The message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.types.handle_pending_room_message">
+<span class="sig-prename descclassname"><span class="pre">backend.types.</span></span><span class="sig-name descname"><span class="pre">handle_pending_room_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><span class="pre">Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.types.handle_pending_room_message" title="Link to this definition">¶</a></dt>
+<dd><p>Handle a pending room message from the client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><em>Client</em></a>) – The client.</p></li>
+<li><p><strong>message</strong> (<em>dict</em>) – The message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.types.handle_private_message">
+<span class="sig-prename descclassname"><span class="pre">backend.types.</span></span><span class="sig-name descname"><span class="pre">handle_private_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><span class="pre">Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.types.handle_private_message" title="Link to this definition">¶</a></dt>
+<dd><p>Handle a private message from the client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><em>Client</em></a>) – The client.</p></li>
+<li><p><strong>message</strong> (<em>dict</em>) – The message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.types.handle_public_message">
+<span class="sig-prename descclassname"><span class="pre">backend.types.</span></span><span class="sig-name descname"><span class="pre">handle_public_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><span class="pre">Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.types.handle_public_message" title="Link to this definition">¶</a></dt>
+<dd><p>Handle a public message from the client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><em>Client</em></a>) – The client.</p></li>
+<li><p><strong>message</strong> (<em>dict</em>) – The message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.types.handle_signin_message">
+<span class="sig-prename descclassname"><span class="pre">backend.types.</span></span><span class="sig-name descname"><span class="pre">handle_signin_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><span class="pre">Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.types.handle_signin_message" title="Link to this definition">¶</a></dt>
+<dd><p>Handle a signin message from the client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><em>Client</em></a>) – The client.</p></li>
+<li><p><strong>message</strong> (<em>dict</em>) – The message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="backend.types.handle_signup_message">
+<span class="sig-prename descclassname"><span class="pre">backend.types.</span></span><span class="sig-name descname"><span class="pre">handle_signup_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><span class="pre">Client</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.types.handle_signup_message" title="Link to this definition">¶</a></dt>
+<dd><p>Handle a signup message from the client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="#backend.client.Client" title="backend.client.Client"><em>Client</em></a>) – The client.</p></li>
+<li><p><strong>message</strong> (<em>dict</em>) – The message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SAE302</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Backend Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#backend.client.Client"><code class="docutils literal notranslate"><span class="pre">Client</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend.handler.handle_message"><code class="docutils literal notranslate"><span class="pre">handle_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend.types.handle_ban_message"><code class="docutils literal notranslate"><span class="pre">handle_ban_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend.types.handle_disconnect_message"><code class="docutils literal notranslate"><span class="pre">handle_disconnect_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend.types.handle_kick_message"><code class="docutils literal notranslate"><span class="pre">handle_kick_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend.types.handle_kill_message"><code class="docutils literal notranslate"><span class="pre">handle_kill_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend.types.handle_pending_room_message"><code class="docutils literal notranslate"><span class="pre">handle_pending_room_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend.types.handle_private_message"><code class="docutils literal notranslate"><span class="pre">handle_private_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend.types.handle_public_message"><code class="docutils literal notranslate"><span class="pre">handle_public_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend.types.handle_signin_message"><code class="docutils literal notranslate"><span class="pre">handle_signin_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend.types.handle_signup_message"><code class="docutils literal notranslate"><span class="pre">handle_signup_message()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="interface.html">Interface Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">Main Module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to SAE302’s documentation!</a></li>
+      <li>Next: <a href="interface.html" title="next chapter">Interface Module</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, BasileLT.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/backend.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

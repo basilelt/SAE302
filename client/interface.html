@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Interface Module &#8212; SAE302  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Main Module" href="main.html" />
+    <link rel="prev" title="Backend Module" href="backend.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-interface.chat">
+<span id="interface-module"></span><h1>Interface Module<a class="headerlink" href="#module-interface.chat" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">interface.chat.</span></span><span class="sig-name descname"><span class="pre">ChatWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="backend.html#backend.client.Client" title="backend.client.Client"><span class="pre">Client</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#interface.chat.ChatWindow" title="Link to this definition">¶</a></dt>
+<dd><p>A QMainWindow subclass that represents the chat window of the application.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>client</strong> (<a class="reference internal" href="backend.html#backend.client.Client" title="backend.client.Client"><em>Client</em></a>) – The client that this window is associated with.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow.add_room">
+<span class="sig-name descname"><span class="pre">add_room</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">room</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#interface.chat.ChatWindow.add_room" title="Link to this definition">¶</a></dt>
+<dd><p>Add a room to the chat window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>room</strong> (<em>str</em>) – The name of the room to add.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QCloseEvent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#interface.chat.ChatWindow.closeEvent" title="Link to this definition">¶</a></dt>
+<dd><p>Handle the close event of the window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QCloseEvent</em>) – The close event.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow.create_home_widget">
+<span class="sig-name descname"><span class="pre">create_home_widget</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QWidget</span></span></span><a class="headerlink" href="#interface.chat.ChatWindow.create_home_widget" title="Link to this definition">¶</a></dt>
+<dd><p>Create the home widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The created home widget.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>QWidget</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow.create_private_message_widget">
+<span class="sig-name descname"><span class="pre">create_private_message_widget</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QWidget</span></span></span><a class="headerlink" href="#interface.chat.ChatWindow.create_private_message_widget" title="Link to this definition">¶</a></dt>
+<dd><p>Create the private message widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The created private message widget.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>QWidget</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow.create_room_widget">
+<span class="sig-name descname"><span class="pre">create_room_widget</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QWidget</span></span></span><a class="headerlink" href="#interface.chat.ChatWindow.create_room_widget" title="Link to this definition">¶</a></dt>
+<dd><p>Create the room widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The created room widget.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>QWidget</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow.display_public_message">
+<span class="sig-name descname"><span class="pre">display_public_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">room</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#interface.chat.ChatWindow.display_public_message" title="Link to this definition">¶</a></dt>
+<dd><p>Display a public message in the chat window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>room</strong> (<em>str</em>) – The room where the message was sent.</p></li>
+<li><p><strong>sender</strong> (<em>str</em>) – The sender of the message.</p></li>
+<li><p><strong>content</strong> (<em>str</em>) – The content of the message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow.refresh_rooms">
+<span class="sig-name descname"><span class="pre">refresh_rooms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.chat.ChatWindow.refresh_rooms" title="Link to this definition">¶</a></dt>
+<dd><p>Refresh the list of rooms.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow.send_message">
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.chat.ChatWindow.send_message" title="Link to this definition">¶</a></dt>
+<dd><p>Send the message entered by the user to the server.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow.send_private_message">
+<span class="sig-name descname"><span class="pre">send_private_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.chat.ChatWindow.send_private_message" title="Link to this definition">¶</a></dt>
+<dd><p>Send a private message to the specified user.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow.send_rooms">
+<span class="sig-name descname"><span class="pre">send_rooms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.chat.ChatWindow.send_rooms" title="Link to this definition">¶</a></dt>
+<dd><p>Send the selected rooms to the server.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.chat.ChatWindow.update_title">
+<span class="sig-name descname"><span class="pre">update_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QListWidgetItem</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#interface.chat.ChatWindow.update_title" title="Link to this definition">¶</a></dt>
+<dd><p>Update the title of the subwindow based on the selected item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>item</strong> (<em>QListWidgetItem</em>) – The selected item.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class" id="module-interface.login">
+<dt class="sig sig-object py" id="interface.login.LoginWindow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">interface.login.</span></span><span class="sig-name descname"><span class="pre">LoginWindow</span></span><a class="headerlink" href="#interface.login.LoginWindow" title="Link to this definition">¶</a></dt>
+<dd><p>A class to represent a login window.</p>
+<p>…</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attr animationGroup<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a group of animations that will be played sequentially.</p>
+</dd>
+<dt class="field-even">Attr connectOriginalSize<span class="colon">:</span></dt>
+<dd class="field-even"><p>the original size of the connect button.</p>
+</dd>
+<dt class="field-odd">Attr quitOriginalSize<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the original size of the quit button.</p>
+</dd>
+<dt class="field-even">Attr registerOriginalSize<span class="colon">:</span></dt>
+<dd class="field-even"><p>the original size of the register button.</p>
+</dd>
+<dt class="field-odd">Method setupCSS()<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sets up the CSS for the window.</p>
+</dd>
+<dt class="field-even">Method setupWidgets()<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sets up the widgets for the window.</p>
+</dd>
+<dt class="field-odd">Method createLineEdit() -&gt; QLineEdit<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Creates a QLineEdit widget with a specific style.</p>
+</dd>
+<dt class="field-even">Method createGroup(labelText<span class="colon">:</span></dt>
+<dd class="field-even"><p>str, lineEdit: QLineEdit) -&gt; QGroupBox: Creates a QGroupBox with a QLabel and a QLineEdit.</p>
+</dd>
+<dt class="field-odd">Method setupLayout()<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sets up the layout for the window.</p>
+</dd>
+<dt class="field-even">Method setupAnimations()<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sets up the animations for the buttons.</p>
+</dd>
+<dt class="field-odd">Method showEvent(event<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QShowEvent): Overrides the showEvent method to set up the button animations.</p>
+</dd>
+<dt class="field-even">Method animateButton(button<span class="colon">:</span></dt>
+<dd class="field-even"><p>QPushButton, animation: QPropertyAnimation, originalSize: QSize): Animates a button when it is clicked.</p>
+</dd>
+<dt class="field-odd">Method keyPressEvent(event<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QKeyEvent): Overrides the keyPressEvent method to handle Return and Enter key presses.</p>
+</dd>
+<dt class="field-even">Method onConnectClicked()<span class="colon">:</span></dt>
+<dd class="field-even"><p>Handles the click event of the connect button.</p>
+</dd>
+<dt class="field-odd">Method onQuitClicked()<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Handles the click event of the quit button.</p>
+</dd>
+<dt class="field-even">Method onRegisterClicked()<span class="colon">:</span></dt>
+<dd class="field-even"><p>Handles the click event of the register button.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.animateButton">
+<span class="sig-name descname"><span class="pre">animateButton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QPushButton</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">animation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QPropertyAnimation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">originalSize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QSize</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.animateButton" title="Link to this definition">¶</a></dt>
+<dd><p>Animates a button when it is clicked.</p>
+<p>This method creates a QGraphicsDropShadowEffect, sets its properties, and applies it to the button. It then starts the animation and sets a timer to remove the effect after the animation is finished.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>button</strong> (<em>QPushButton</em>) – The button to animate.</p></li>
+<li><p><strong>animation</strong> (<em>QPropertyAnimation</em>) – The animation to apply to the button.</p></li>
+<li><p><strong>originalSize</strong> (<em>QSize</em>) – The original size of the button.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.closeEvent" title="Link to this definition">¶</a></dt>
+<dd><p>Overrides the closeEvent method to close the client.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.createGroup">
+<span class="sig-name descname"><span class="pre">createGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labelText</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineEdit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QLineEdit</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QGroupBox</span></span></span><a class="headerlink" href="#interface.login.LoginWindow.createGroup" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a QGroupBox with a QLabel and a QLineEdit.</p>
+<p>This method creates a QLabel with the given text and aligns it to the center. It then creates a QGroupBox and sets its layout to a QVBoxLayout. Finally, it adds the label and line edit to the layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>labelText</strong> (<em>str</em>) – The text for the QLabel.</p></li>
+<li><p><strong>lineEdit</strong> (<em>QLineEdit</em>) – The QLineEdit to add to the QGroupBox.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The created QGroupBox.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QGroupBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.createLineEdit">
+<span class="sig-name descname"><span class="pre">createLineEdit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.createLineEdit" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a QLineEdit widget with a specific style.</p>
+<p>This method creates a QLineEdit widget and sets its background color and border style.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The created QLineEdit widget.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>QLineEdit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.createPasswordLineEdit">
+<span class="sig-name descname"><span class="pre">createPasswordLineEdit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.createPasswordLineEdit" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a QLineEdit widget with a specific style for password input.</p>
+<p>This method creates a QLineEdit widget, sets its background color and border style, and sets its echo mode to Password.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.handle_disconnection">
+<span class="sig-name descname"><span class="pre">handle_disconnection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.handle_disconnection" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the disconnection of the client.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QKeyEvent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.keyPressEvent" title="Link to this definition">¶</a></dt>
+<dd><p>Overrides the keyPressEvent method to handle Return and Enter key presses.</p>
+<p>This method checks if the pressed key is Return or Enter. If the user line edit has focus, it sets the focus to the password line edit. If the password line edit has focus, it sets the focus to the server line edit. If the server line edit has focus, it sets the focus to the port line edit. If the port line edit has focus, it clicks the connect button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QKeyEvent</em>) – The key press event.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.onClientConnected">
+<span class="sig-name descname"><span class="pre">onClientConnected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.onClientConnected" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the connected signal of the client.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.onConnectClicked">
+<span class="sig-name descname"><span class="pre">onConnectClicked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.onConnectClicked" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the click event of the connect button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.onQuitClicked">
+<span class="sig-name descname"><span class="pre">onQuitClicked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.onQuitClicked" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the click event of the quit button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.onRegisterClicked">
+<span class="sig-name descname"><span class="pre">onRegisterClicked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.onRegisterClicked" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the click event of the register button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.setupAnimations">
+<span class="sig-name descname"><span class="pre">setupAnimations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.setupAnimations" title="Link to this definition">¶</a></dt>
+<dd><p>Sets up the animations for the buttons.</p>
+<p>This method creates QPropertyAnimation objects for the connect, quit, and register buttons. It also creates a QSequentialAnimationGroup and adds the animations to it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.setupCSS">
+<span class="sig-name descname"><span class="pre">setupCSS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.setupCSS" title="Link to this definition">¶</a></dt>
+<dd><p>Sets up the CSS for the window.</p>
+<p>This method reads a CSS file, formats it with color values, and applies it to the window.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.setupLayout">
+<span class="sig-name descname"><span class="pre">setupLayout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.setupLayout" title="Link to this definition">¶</a></dt>
+<dd><p>Sets up the layout for the window.</p>
+<p>This method creates a QWidget and sets it as the central widget of the window. It then creates a QGridLayout and sets it as the layout of the central widget. It also creates a QFrame, sets its style and minimum width, and adds it to the grid layout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.setupWidgets">
+<span class="sig-name descname"><span class="pre">setupWidgets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.setupWidgets" title="Link to this definition">¶</a></dt>
+<dd><p>Sets up the widgets for the window.</p>
+<p>This method creates QLineEdit widgets for user, password, server, and port. It also creates QPushButton widgets for connect, quit, and register. Finally, it creates QGroupBox widgets for user, password, server, and port.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.showErrorPopup">
+<span class="sig-name descname"><span class="pre">showErrorPopup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.showErrorPopup" title="Link to this definition">¶</a></dt>
+<dd><p>Show an error dialog with a given title and message.</p>
+<p>This function creates a QDialog with a specified error title and message.
+It also displays an error gif in the dialog. The dialog has an “OK” button
+that closes the dialog when clicked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>error</strong> (<em>str</em>) – The title of the error dialog.</p></li>
+<li><p><strong>error_message</strong> (<em>str</em>) – The message to display in the error dialog.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="interface.login.LoginWindow.showEvent">
+<span class="sig-name descname"><span class="pre">showEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QShowEvent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#interface.login.LoginWindow.showEvent" title="Link to this definition">¶</a></dt>
+<dd><p>Overrides the showEvent method to set up the button animations.</p>
+<p>This method saves the original sizes of the connect, quit, and register buttons. It also connects the clicked signal of each button to a lambda function that calls the animateButton method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QShowEvent</em>) – The show event.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SAE302</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="backend.html">Backend Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Interface Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#interface.chat.ChatWindow"><code class="docutils literal notranslate"><span class="pre">ChatWindow</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interface.login.LoginWindow"><code class="docutils literal notranslate"><span class="pre">LoginWindow</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">Main Module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="backend.html" title="previous chapter">Backend Module</a></li>
+      <li>Next: <a href="main.html" title="next chapter">Main Module</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, BasileLT.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/interface.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
