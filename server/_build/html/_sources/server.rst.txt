@@ -1,4 +1,4 @@
-Backend Module
+Server Module
 ==============
 
 .. automodule:: server.admin
